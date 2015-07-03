@@ -123,3 +123,6 @@ r500
 
 *r552
 -Fixed error with ACF menu tool, courtesy of brandonsturgeon
+
+*r553
+-Fix for invalid setpos spam, TY Sestze

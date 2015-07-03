@@ -109,8 +109,15 @@ end
 
 function EFFECT:ApplyMovement( Bullet )
 
-	self:SetPos( Bullet.SimPos )									--Moving the effect to the calculated position
-	self:SetAngles( Bullet.SimFlight:Angle() )
+	local setPos = Bullet.SimPos
+	if((math.abs(setPos.x) > 16000) or (math.abs(setPos.y) > 16000) or (setPos.z < -16000)) then
+		self:Remove()
+		return
+	end
+	if( setPos.z < 16000 ) then
+		self:SetPos( Bullet.SimPos )--Moving the effect to the calculated position
+		self:SetAngles( Bullet.SimFlight:Angle() )
+	end
 	
 	if Bullet.Tracer then
 		local DeltaTime = CurTime() - Bullet.LastThink
