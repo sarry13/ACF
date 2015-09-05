@@ -58,7 +58,7 @@ function ACF_RemoveBullet( Index )
 end
 
 function ACF_CheckClips(Index, Bullet, Ent, HitPos )
-	if not Ent:GetClass() == "prop_physics" or Ent.ClipData == nil then return false end
+	if not (Ent:GetClass() == "prop_physics") or (Ent.ClipData == nil) then return false end
 	
 	local HitClip = false
 	local normal
@@ -153,6 +153,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		FlightTr.start = Bullet.StartTrace
 		FlightTr.endpos = Bullet.NextPos
 		FlightTr.filter = Bullet.Filter
+		if ( Bullet.Caliber <= 0.3 ) then FlightTr.mask = MASK_SHOT end
 		FlightRes = util.TraceLine(FlightTr)					--Trace to see if it will hit anything
 		
 		if FlightRes.HitNonWorld and ACF_CheckClips(Index, Bullet, FlightRes.Entity, FlightRes.HitPos ) then

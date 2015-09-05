@@ -171,14 +171,24 @@ function TOOL:Reload( trace )
 	if not IsValid( ent ) or ent:IsPlayer() then return false end
 	if CLIENT then return true end
 	
-	ACF_CalcMassRatio(ent)
+	local data = ACF_CalcMassRatio(ent, true)
 	
 	local total = math.Round( ent.acftotal, 1 )
 	local phystotal = math.Round( ent.acfphystotal, 1 )
 	local parenttotal = math.Round( ent.acftotal - ent.acfphystotal, 1 )
 	local physratio = math.Round(100 * ent.acfphystotal / ent.acftotal, 1)
 	
-	self:GetOwner():ChatPrint( "Total mass is " .. total .. " kg  ("..phystotal.." kg physical, "..parenttotal.." kg parented, "..physratio.."% physical)" )
+	local pwr = "\n"
+	if data.Fuel == 2 then
+		pwr = pwr .. math.Round(data.Power * 1.25 / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power * 1.25) .. " hp"
+	else
+		pwr = pwr .. math.Round(data.Power / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power) .. " hp"
+		if data.Fuel == 1 then
+			pwr = pwr .. "\n" .. math.Round(data.Power * 1.25 / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power * 1.25) .. " hp with fuel"
+		end
+	end
+	
+	self:GetOwner():ChatPrint( "Total mass is " .. total .. " kg  ("..phystotal.." kg physical, "..parenttotal.." kg parented, "..physratio.."% physical)"..pwr )
 	
 end
 

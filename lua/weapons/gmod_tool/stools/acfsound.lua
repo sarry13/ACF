@@ -21,7 +21,7 @@ local function ReplaceSound( ply , Entity , data)
 		if Entity:GetClass() == "acf_engine" then
 			Entity.SoundPath = sound
 			Entity.SoundPitch = pitch
-		elseif Entity:GetClass() == "acf_gun" then
+		elseif ( Entity:GetClass() == "acf_gun" ) or ( Entity:GetClass() == "acf_rack" ) then
 			Entity.Sound = sound
 			Entity:SetNWString( "Sound", sound )
 		end

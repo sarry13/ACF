@@ -155,7 +155,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 		end
 	end
 	
-	HitRes.Damage = var * dmul * (Penetration/Armour)^2 * FrAera	-- This is the volume of the hole caused by our projectile 
+	HitRes.Damage = var * dmul * (Penetration/Armour)^2 * FrAera --/math.abs( math.cos(math.rad(Angle/1.25)) )	-- This is the volume of the hole caused by our projectile, with area adjusted by slope
 	HitRes.Overkill = (MaxPenetration - Penetration)
 	HitRes.Loss = Penetration/MaxPenetration
 	

@@ -111,6 +111,16 @@ function ents_methods:acfSetActive( on )
 	this:TriggerInput( "Active", on and 1 or 0 )	
 end
 
+--returns 1 if hitpos is on a clipped part of prop
+function ents_methods:acfHitClip( hitpos )
+	SF.CheckType( self, ents_metatable )
+	SF.CheckType( hitpos, "vector" )
+	local this = unwrap( self )	
+	
+	if not isOwner(self, this) then return false end
+	if ACF_CheckClips(nil, nil, this, hitpos) then return true else return false end
+end
+
 local linkTables =
 { -- link resources within each ent type. should point to an ent: true if adding link.Ent, false to add link itself
 	acf_engine 		= { GearLink = true, FuelLink = false },
@@ -640,6 +650,30 @@ function ents_methods:acfSteerRate( rate )
 	if restrictInfo( SF.instance.player, this ) then return end
 	if not this.DoubleDiff then return end
 	this:TriggerInput( "Steer Rate", rate )
+end
+
+-- Applies gear hold for an automatic ACF gearbox
+function ents_methods:acfHoldGear( hold )
+	SF.CheckType( self, ents_metatable )
+	SF.CheckType( hold, "number" )
+	local this = unwrap( self )
+	
+	if not isGearbox( this ) then return end
+	if restrictInfo( SF.instance.player, this ) then return end
+	if not this.Auto then return end
+	this:TriggerInput( "Hold Gear", hold )
+end
+
+-- Sets the shift point scaling for an automatic ACF gearbox
+function ents_methods:acfShiftPointScale( scale )
+	SF.CheckType( self, ents_metatable )
+	SF.CheckType( scale, "number" )
+	local this = unwrap( self )
+	
+	if not isGearbox( this ) then return end
+	if restrictInfo( SF.instance.player, this ) then return end
+	if not this.Auto then return end
+	this:TriggerInput( "Shift Speed Scale", scale )
 end
 
 

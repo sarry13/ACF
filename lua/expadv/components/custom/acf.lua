@@ -99,6 +99,9 @@ Component:AddPreparedFunction( "acfActive", "e:b", "",
 end]] )
 Component:AddFunctionHelper( "acfActive", "e:b", "Sets Active (false/true) for an ACF engine, ammo crate, or fuel tank." )
 
+Component:AddInlineFunction( "acfHitClip", "e:v", "b", "(@value 1:IsValid() and !EXPADV.Components.acf.restrictInfo(Context.player, @value 1)) and ACF_CheckClips(nil, nil, @value 1, @value 2)" )
+Component:AddFunctionHelper( "acfHitClip", "e:v", "Returns true if hitpos is on a clipped part of prop." )
+
 Component:AddPreparedFunction( "acfLinks", "e:", "ar",
 [[@define ret = { __type = "e" }
 if @value 1:IsValid() then
@@ -297,6 +300,18 @@ Component:AddPreparedFunction( "acfSteerRate", "e:n", "",
 	@value 1:TriggerInput( "Steer Rate", @value 2 )
 end]] )
 Component:AddFunctionHelper( "acfSteerRate", "e:n", "Sets the steer rate of a ACF gearbox. Only works on a dual differential." )
+
+Component:AddPreparedFunction( "acfHoldGear", "e:n", "",
+[[if @value 1:IsValid() and @value 1:GetClass() == "acf_gearbox" and EXPADV.IsOwner(@value 1, Context.player) and @value 1.Auto then
+	@value 1:TriggerInput( "Hold Gear", @value 2 )
+end]] )
+Component:AddFunctionHelper( "acfHoldGear", "e:n", "Set to 1 to stop ACF automatic gearboxes upshifting." )
+
+Component:AddPreparedFunction( "acfShiftPointScale", "e:n", "",
+[[if @value 1:IsValid() and @value 1:GetClass() == "acf_gearbox" and EXPADV.IsOwner(@value 1, Context.player) and @value 1.Auto then
+	@value 1:TriggerInput( "Shift Speed Scale", @value 2 )
+end]] )
+Component:AddFunctionHelper( "acfShiftPointScale", "e:n", "Sets the shift point scale for an ACF automatic gearbox." )
 
 -- [ Gun Functions ] --
 

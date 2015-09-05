@@ -64,7 +64,7 @@ ACF_defineGun("45mmSA", {
 
 ACF_defineGun("57mmSA", {
 	name = "57mm Semiautomatic Cannon",
-	desc = "The 57mm offers the closest thing to a tank cannon, but still lacking in power.",
+	desc = "The 57mm is a respectable light armament, offering considerable penetration and moderate fire rate.",
 	model = "models/autocannon/semiautocannon_57mm.mdl",
 	gunclass = "SA",
 	caliber = 5.7,
@@ -76,5 +76,22 @@ ACF_defineGun("57mmSA", {
 	round = {
 		maxlength = 62,
 		propweight = 2
+	}
+} )
+
+ACF_defineGun("76mmSA", {
+	name = "76mm Semiautomatic Cannon",
+	desc = "The 76mm semiauto is a fearsome weapon, able to put 5 76mm rounds downrange in 8 seconds.",
+	model = "models/autocannon/semiautocannon_76mm.mdl",
+	gunclass = "SA",
+	caliber = 7.62,
+	weight = 3200,
+	year = 1984,
+	rofmod = 1,
+	magsize = 5,
+	magreload = 5,
+	round = {
+		maxlength = 75, --70.67
+		propweight = 4.75
 	}
 } )

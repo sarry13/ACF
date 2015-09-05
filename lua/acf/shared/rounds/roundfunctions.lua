@@ -40,6 +40,11 @@ function ACF_RoundShellCapacity( Momentum, FrAera, Caliber, ProjLength )
 	return  Volume, Length, Radius --Returning the cavity volume and the minimum wall thickness
 end
 
+function ACF_RicoProbability( Rico, Speed)
+	local MinAngle = math.min(Rico - Speed/15,89)
+	return { Min = math.Round(math.max(MinAngle,0.1),1), Mean = math.Round(math.max(MinAngle+(90-MinAngle)/2,0.1),1), Max = 90 }
+end
+
 --Formula from https://mathscinotes.wordpress.com/2013/10/03/parameter-determination-for-pejsa-velocity-model/
 --not terribly accurate for acf, particularly small caliber (7.62mm off by 120 m/s at 800m), but is good enough for quick indicator
 function ACF_PenRanging( MuzzleVel, DragCoef, ProjMass, PenAera, LimitVel, Range ) --range in m, vel is m/s

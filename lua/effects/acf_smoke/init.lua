@@ -29,11 +29,11 @@ function EFFECT:Init( data )
 	
 	
 	if self.Magnitude > 0 then
-		self:SmokeFiller( Ground, SmokeColor, self.Magnitude, 1.0, 5+self.Magnitude/16 ) --quick build and dissipate
+		self:SmokeFiller( Ground, SmokeColor, self.Magnitude*1.25, 1.0, 10+self.Magnitude/8 ) --quick build and dissipate
 	end
 	
 	if self.Radius > 0 then
-		self:SmokeFiller( Ground, SmokeColor, self.Radius, 1/8, 20+self.Radius/4 ) --slow build but long lasting
+		self:SmokeFiller( Ground, SmokeColor, self.Radius*1.25, 0.15, 20+self.Radius/4 ) --slow build but long lasting
 	end
 
 	self.Emitter:Finish()

@@ -2,11 +2,41 @@
 -- INSTALLATION --
 ------------------
 
+- Recommended installation: SVN
+  If you don't have a svn program, TortoiseSVN is a good one. http://TortoiseSVN.net
+  This walkthrough assumes you are using TortoiseSVN, and have it installed already.
+  
+  Go to your garrysmod addons folder ( \SteamApps\common\GarrysMod\garrysmod\addons ), create a new
+  folder named ACF, right click it and choose "SVN Checkout".  In the "URL of repository" box, put
+  "https://github.com/nrlulz/ACF/trunk" (without the "") and click OK.  ACF is a fairly large addon,
+  so it will take some time to download.
+  
+  If you want to update the ACF SVN at some point, right click the ACF folder in your addons and choose
+  "SVN Update".
+  
+- Last resort installation
+  If you're having problems with SVN, you can download a zip file directly from github.  However, this
+  is NOT RECOMMENDED as it's a large, slow download, has a LOT of extra unused stuff which bloats the zip,
+  and you have to redownload the entire thing if you want to update ACF.
+  
+  Go to https://github.com/nrlulz/ACF and click the "Download Zip" button on the right side of the page.
+  If you don't have an ACF folder inside your addons, create one.  Open the zip, go into the "ACF-Master"
+  folder, and extract all the files into your ACF folder in addons.  The folder structure should look
+  like "garrysmod\addons\ACF\lua" and NOT "garrysmod\addons\ACF\ACF-Master\lua".
+
 - If you are updating a previous installation of ACF and you're having issues with 
   vanilla particles (fire, blood) not showing up, delete your garrysmod/particles/
   directory.
 
 - It is not necessary to copy the scripts or particles directories anymore.
+
+- IF YOU ARE HAVING INSTALLATION PROBLEMS, PLEASE POST ON THE FACEPUNCH ACF THREAD, NOT ON GITHUB.
+  Please only create an issue on github if you've found a bug, or have a suggestion.  The FP forum thread
+  is a good place for general ACF conversation, suggestions, and help requests.
+  Forum thread: http://facepunch.com/showthread.php?t=1244349
+  
+- If you're into ACF combat, Knight Icy has an excellent extra sound pack for weapons on the GMod workshop.
+  Check it out at http://steamcommunity.com/sharedfiles/filedetails/?id=301482990
 
 
 ---------------------------------------------------------------
@@ -46,6 +76,14 @@ ACF_BulletDamage( Type, Entity, Energy, Area, Angle, Inflictor, Bone, Gun, IsFro
 	- Bone (number): the bone being hit
 	- Gun (entity): the gun that fired the bullet
 	- IsFromAmmo (boolean): true if this is from an ammo explosion (don't think this is implemented yet)
+
+ACF_KEShove( Target, Pos, Dir, KE )
+	Return false to prevent kinetic shove
+	Args:
+	- Target (entity): the entity being shoved
+	- Pos (vector): the position the shove is applied from
+	- Dir (vector): the direction of the shove
+	- KE (number): force of the shove in KJ
 	
 ACF_FireShell( Gun, Bullet )
 	Return false to prevent gun from firing

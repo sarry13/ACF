@@ -326,6 +326,12 @@ end
 
 function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10)
 
+	local GunData = list.Get("ACFEnts").Guns[Data1]
+	if not GunData then 
+		self:Remove()
+		return
+	end
+	
 	--Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
 	self.RoundId = Data1		--Weapon this round loads into, ie 140mmC, 105mmH ...
 	self.RoundType = Data2		--Type of round, IE AP, HE, HEAT ...
@@ -358,13 +364,11 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.Volume = vol*Efficiency	
 	local CapMul = (vol > 46000) and ((math.log(vol*0.00066)/math.log(2)-4)*0.125+1) or 1
 	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
-	self.Caliber = list.Get("ACFEnts").Guns[self.RoundId].caliber
+	self.Caliber = GunData.caliber
 	self.RoFMul = (vol > 46000) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
-
-	local List = list.Get("ACFEnts")
 	
 	self:SetNWString( "Ammo", self.Ammo )
-	self:SetNWString( "WireName", List.Guns[self.RoundId].name .. " Ammo" )
+	self:SetNWString( "WireName", GunData.name .. " Ammo" )
 	
 	self.NetworkData = ACF.RoundTypes[self.RoundType].network
 	self:NetworkData( self.BulletData )
@@ -421,6 +425,8 @@ function ENT:FirstLoad()
 end
 
 function ENT:Think()
+	if not self:IsSolid() then self.Ammo = 0 end
+	
 	local AmmoMass = self:AmmoMass()
 	self.Mass = math.max(self.EmptyMass, self:GetPhysicsObject():GetMass() - AmmoMass) + AmmoMass*(self.Ammo/math.max(self.Capacity,1))
 	self:GetPhysicsObject():SetMass(self.Mass) 
@@ -489,7 +495,7 @@ function ENT:Think()
 							self.Ammo = self.Ammo - Transfert
 								
 							Ammo.Supplied = true
-							Ammo.Entity:EmitSound( "items/ammo_pickup.wav", 500, 80 )
+							Ammo.Entity:EmitSound( "items/ammo_pickup.wav", 350, 80, 0.30 )
 						end
 					end
 				end

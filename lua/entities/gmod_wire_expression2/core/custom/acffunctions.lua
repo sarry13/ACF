@@ -1,27 +1,15 @@
 E2Lib.RegisterExtension("acf", true)
 -- [ To Do ] --
-
--- #general
-
--- #engine
-
--- #gearbox
-
--- #gun
---use an input to set reload manually, to remove timer?
-
--- #ammo
-
 -- #prop armor
 --get incident armor ?
 --hit calcs ?
 --conversions ?
 
--- #fuel
+
+--DON'T FORGET TO UPDATE cl_acfdescriptions.lua WHEN ADDING FUNCTIONS
 
 
 -- [ Helper Functions ] --
-
 
 local function isEngine(ent)
 	if not validPhysics(ent) then return false end
@@ -53,18 +41,6 @@ local function restrictInfo(ply, ent)
 		if isOwner(ply, ent) then return false else return true end
 	end
 	return false
-end
-
-
-
-local function isLinkableACFEnt(ent)
-
-	if not validPhysics(ent) then return false end
-	
-	local entClass = ent:GetClass()
-	
-	return ACF_E2_LinkTables[entClass] ~= nil
-
 end
 
 
@@ -114,10 +90,19 @@ e2function void entity:acfActive( number on )
 	this:TriggerInput("Active", on)	
 end
 
+__e2setcost( 5 )
+
+--returns 1 if hitpos is on a clipped part of prop
+e2function number entity:acfHitClip( vector hitpos )
+	if not isOwner(self, this) then return 0 end
+	if ACF_CheckClips(nil, nil, this, hitpos) then return 1 else return 0 end
+end
+
+__e2setcost( 1 )
 
 
 
-ACF_E2_LinkTables = ACF_E2_LinkTables or 
+local linkTables =
 { -- link resources within each ent type.  should point to an ent: true if adding link.Ent, false to add link itself
 	acf_engine 		= {GearLink = true, FuelLink = false},
 	acf_gearbox		= {WheelLink = true, Master = false},
@@ -131,7 +116,7 @@ local function getLinks(ent, enttype)
 	
 	local ret = {}
 	-- find the link resources available for this ent type
-	for entry, mode in pairs(ACF_E2_LinkTables[enttype]) do
+	for entry, mode in pairs(linkTables[enttype]) do
 		if not ent[entry] then error("Couldn't find link resource " .. entry .. " for entity " .. tostring(ent)) return end
 		
 		-- find all the links inside the resources
@@ -172,7 +157,7 @@ e2function array entity:acfLinks()
 	
 	local enttype = this:GetClass()
 	
-	if not ACF_E2_LinkTables[enttype] then
+	if not linkTables[enttype] then
 		return searchForGearboxLinks(this)
 	end
 	
@@ -215,7 +200,7 @@ end
 
 --allows e2 to perform ACF links
 e2function number entity:acfLinkTo(entity target, number notify)
-	if not (isLinkableACFEnt(this) and (isOwner(self, this) and isOwner(self, target))) then
+	if not ((isGun(this) or isEngine(this) or isGearbox(this)) and (isOwner(self, this) and isOwner(self, target))) then
 		if notify > 0 then
 			ACF_SendNotify(self.player, 0, "Must be called on a gun, engine, or gearbox you own.")
 		end
@@ -231,7 +216,7 @@ end
 
 --allows e2 to perform ACF unlinks
 e2function number entity:acfUnlinkFrom(entity target, number notify)
-	if not (isLinkableACFEnt(this) and (isOwner(self, this) and isOwner(self, target))) then
+	if not ((isGun(this) or isEngine(this) or isGearbox(this)) and (isOwner(self, this) and isOwner(self, target))) then
 		if notify > 0 then
 			ACF_SendNotify(self.player, 0, "Must be called on a gun, engine, or gearbox you own.")
 		end
@@ -283,13 +268,21 @@ end
 -- Returns the powerband min of an ACF engine
 e2function number entity:acfPowerbandMin()
 	if not isEngine(this) then return 0 end
-	return this.PeakMinRPM or 0
+	if ( this.iselec == true ) then
+		return math.max(this.IdleRPM, this.PeakMinRPM) 
+	else
+		return this.PeakMinRPM or 0
+	end
 end
 
 -- Returns the powerband max of an ACF engine
 e2function number entity:acfPowerbandMax()
 	if not isEngine(this) then return 0 end
-	return this.PeakMaxRPM or 0
+	if ( this.iselec == true ) then
+		return math.floor(this.LimitRPM / 2) 
+	else
+		return this.PeakMaxRPM or 0
+	end
 end
 
 -- Returns the redline rpm of an ACF engine
@@ -337,8 +330,21 @@ end
 e2function number entity:acfInPowerband()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	if (this.FlyRPM < this.PeakMinRPM) then return 0 end
-	if (this.FlyRPM > this.PeakMaxRPM) then return 0 end
+	
+	local pbmin
+	local pbmax
+	
+	if (this.iselec == true )then
+		pbmin = this.IdleRPM
+		pbmax = math.floor(this.LimitRPM / 2)
+	else
+		pbmin = this.PeakMinRPM
+		pbmax = this.PeakMaxRPM
+	end
+	
+	if (this.FlyRPM < pbmin) then return 0 end
+	if (this.FlyRPM > pbmax) then return 0 end
+	
 	return 1
 end
 
@@ -516,12 +522,28 @@ e2function void entity:acfClutchRight( number clutch )
 	this:TriggerInput("Right Clutch", clutch)
 end
 
--- Sets the steer ratio for an ACF gearbox
+-- Sets the steer ratio for an ACF double differential gearbox
 e2function void entity:acfSteerRate( number rate )
 	if not isGearbox(this) then return end
 	if not isOwner(self, this) then return end
 	if (not this.DoubleDiff) then return end
 	this:TriggerInput("Steer Rate", rate)
+end
+
+-- Applies gear hold for an automatic ACF gearbox
+e2function void entity:acfHoldGear( number hold )
+	if not isGearbox(this) then return end
+	if not isOwner(self, this) then return end
+	if (not this.Auto) then return end
+	this:TriggerInput("Hold Gear", hold)
+end
+
+-- Sets the shift point scaling for an automatic ACF gearbox
+e2function void entity:acfShiftPointScale( number scale )
+	if not isGearbox(this) then return end
+	if not isOwner(self, this) then return end
+	if (not this.Auto) then return end
+	this:TriggerInput("Shift Speed Scale", scale)
 end
 
 

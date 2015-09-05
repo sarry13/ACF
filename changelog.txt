@@ -1,95 +1,6 @@
 r500
 --For an extended version history, please visit the github changelog.  https://github.com/nrlulz/ACF/commits/master
 
-*r529
--Added looter's fix for missing sound lag on guns
--Added _Beckett's recolorable mortar models
--Added Cre8or's fixed/updated rotor sounds
--Added Cre8or's new sounds, including missiles, alarms, rotors, engines, +more
--New GL and SL sounds, courtesy of Cre8or
--Moved energy weapon sounds to acf extras folder
--Removed some duplicate sounds
--120mm SC weight dropped from 4.2 tons to 3.8 tons
--140mm SC weight dropped from 7 tons to 6 tons
--Slightly normalized HE damage with respect to ductility
-
-*r532
--Starfall function fixes, courtesy of EpicG
-
-*r533
--Added _Beckett's updated V engine models with bodygrouped airfilters and exhaust
--Added _Beckett's updated howitzer models with bodygrouped recoil and muzzles
--Added _Beckett's new RAC and HMG models
--New 2x3x6 and 2x3x8 ammo crate sizes, model courtesy of _Beckett
--New thin clutch "gearbox", model courtesy of gamerpaddy
--Fixed standalone electric driveshaft attach point, courtesy of gamerpaddy
--Added I2 and V4 special
--1.0L I4 special flywheel mass reduced
--Large I3 petrol torque lowered slightly
--Drag halved in ballistic calculations, making long range combat more viable
--In ACF menu tool, HEAT penetration now accounts for muzzle vel
--In ACF menu tool, added velocity / penetration estimates at 300m and 800m for AP, APHE, HEAT, HP, and FL
--HEAT damage increased 25% against engines, fuel, and ammo
--MGs can no longer fire HE rounds
--Smoke rounds no longer deal HE damage
-
-*r534
--Added gamerpaddy's updated inline engine models with bodygrouped exhaust
--Added tiny standalone clutch, model courtesy of gamerpaddy
--Added 2 more cannon muzzle brakes, courtesy of _Beckett
--Updated / fixed _Beckett's RAC models
--Fixed HE filler mass not factoring into APHE penetration
--Fixed standalone clutch not transmitting torque
--Fixed engines that require fuel not shutting off when out of fuel
--Fixed a few typos
--Buffed 105mm howitzer (1810 kg -> 1480 kg, longer round, higher max propellant)
--Buffed 122mm howitzer (3520 kg -> 3420 kg, longer round, higher max propellant)
--Rolled back change to MG; they can now fire APHE and HE again
-
-*r536
--Added double clutch funtionality to double diff gearboxes
-
-*r537
--Replaced instances of deprecated networking functions
--Replaced instances of NWInt with NWFloat where needed
--Added bit of text on ACF tool indicating when a gun is parentable
--Added bit of text detailing crate info when setting up ammo
--Added functions acfFlyInertia() and acfFlyMass(), courtesy of EpicG
--Added functions acfLinkTo() and acfUnlinkFrom(), courtesy of Starkkz
--Updated ACF tool to freeze ents on spawn
--Updated smoke, can now adjust burst vs duration
--APHE, HE blacklisted for MG and RAC (I mean it this time!!)
--MG 7.62, 12.7, and 14.5 are now parentable
--Gearbox reaction torque now accounts for nonphysical mass
--Engines that require fuel now show fuelled stats on overlay
--Electrics are now much more durable in combat
--Fixed diesels losing torque faster than petrols when taking damage
--Fixed HE detonating inside bounding box of a prop being automatic hit (unrelated to HE bug)
--Fixed crate weight not updating if new ammo setup is lighter
--Fixed typo in e2 func acfFuelUse() that caused it to always return 0
-
-*r542
--Fixed some effect errors, courtesy of Python1320
--Fixed issue with unitialized var in guns
-
-*r543
--Added EA2 acf component, courtesy of FreeFry
--Added ability for rounds to ricochet off brushwork/displacements
--Updated tracer effect
--Renamed "Any" fueltype to "Multifuel"
--Fixed bug with parented mass lookup that caused massive lag on high rof weapons
--Fixed bug with parented weapons applying too much force
-
-*r544
--New engines and minor balancing by RedReaper
---Added tiny electric and 2 multifuel boxers
---Minor buffs to 5.0L B6, 4.5L V8
---Minor nerfs to 4.3L V10, 8L V10, 22L V10
---Adjusted 3L V12 flywheel inertia
---Jerry can is now linkable
---Added more fuel tank descriptions
--Fixed issue caused by setparent function override, courtesy of thegrb93
-
 *r545
 -Fixed 2.4 B4 using wrong size model
 -Slight buff to 2.1L B4, 2.4L B4, 3.6L V6
@@ -126,3 +37,42 @@ r500
 
 *r553
 -Fix for invalid setpos spam, TY Sestze
+
+*r555
+-Added ground gas turbines
+-Added automatic transmissions
+-Added 76mm SA
+-Added client convar ACF_MobilityRopeLinks, setting 0 will skip rope creation on your links
+-Added ACF E2/SF/EA2 function "entity:acfHitClip( vector hitpos )"; returns 1 if hitpos is on clipped part of entity
+-Added ACF E2/SF/EA2 function "acfHoldGear" and "acfShiftPointScale" for automatic gearboxes
+-Added a hook for ACF_KEShove
+-Added legality checks for SOLID_NONE on ACF entities
+-Added Sestze's MASK_SHOT passthrough (lets 30mm and under pass through things like chain-link fences)
+-Added power to weight ratio output for armor properties tool reload function
+-Added a few small optimizations and behind the scenes improvements
+-Updated readme with install instructions, and a mention of Knight Icy's weapon sound pack
+-Updated ACF Sound Tool to support a future update to ACF Missiles
+-Updated engine stats for electrics and turbines to show the true powerband
+-Fixed operation order error on visclip passthrough
+-Fixed engines ocassionally refusing to use fuel
+-Fixed lua error when trying to create ammo for nonexistent weapon types
+-Fixed possible lua error on KE shove
+-Reduced volume of ammo refill
+-Reduced FL minimum spread from 1.0 to 0.25
+-Damaged gearboxes lose efficiency
+-More relaxed weldparenting rules on mobility (allows parenting chains, requires weld to last [physical] parent)
+-Allowed diffs, double diffs, transfer cases, and clutches to be parented without welds
+-Buffed smoke radius 25%
+-Buffed smoke filler deploy rate, WP filler lifetime
+-Buffed petrol health
+-Buffed electric health massively
+-Nerfed aero turbine throttle response
+-Nerfed transaxial aero turbines to 80% of inline equivalent
+-Nerfed large aero turbine power 8.5%, weight 10%
+-Buffed small inline aero turbine power 15%
+-Buffed med inline aero turbine power 10%
+-Buffed small and med electric power 20%
+-Buffed large electric power 40%
+-Nerfed 0.9L I2 and 1.0L I4 special weight by 15kg
+-Slight nerf to 5.2L V6
+-Slight buff to 7.8L V8

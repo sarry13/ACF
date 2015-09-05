@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 554 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 555 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1945
@@ -47,18 +47,38 @@ ACF.FuelRate = 5.0  --multiplier for fuel usage, 1.0 is approx real world
 ACF.ElecRate = 1.5 --multiplier for electrics
 ACF.TankVolumeMul = 1.0 -- multiplier for fuel tank volume
 
-ACF.FuelDensity = {}
-ACF.FuelDensity["Diesel"] = 0.832  --kg/liter
-ACF.FuelDensity["Petrol"] = 0.745
-ACF.FuelDensity["Electric"] = 3.89 -- li-ion
+ACF.FuelDensity = { --kg/liter
+	Diesel = 0.832,  
+	Petrol = 0.745,
+	Electric = 3.89 -- li-ion
+}
 
-ACF.Efficiency = {} --how efficient various engine types are, higher is worse
-ACF.Efficiency["GenericPetrol"] = 0.304 --kg per kw hr
-ACF.Efficiency["GenericDiesel"] = 0.243 --up to 0.274
-ACF.Efficiency["Turbine"] = 0.375 -- previously 0.231
-ACF.Efficiency["Wankel"] = 0.335
-ACF.Efficiency["Radial"] = 0.4 -- 0.38 to 0.53
-ACF.Efficiency["Electric"] = 0.85 --percent efficiency converting chemical kw into mechanical kw
+ACF.Efficiency = { --how efficient various engine types are, higher is worse
+	GenericPetrol = 0.304, --kg per kw hr
+	GenericDiesel = 0.243, --up to 0.274
+	Turbine = 0.375, -- previously 0.231
+	Wankel = 0.335,
+	Radial = 0.4, -- 0.38 to 0.53
+	Electric = 0.85 --percent efficiency converting chemical kw into mechanical kw
+}
+
+ACF.TorqueScale = { --how fast damage drops torque, lower loses more % torque
+	GenericPetrol = 0.25,
+	GenericDiesel = 0.35,
+	Turbine = 0.2,
+	Wankel = 0.2,
+	Radial = 0.25,
+	Electric = 0.5
+}
+
+ACF.EngineHPMult = { --health multiplier for engines
+	GenericPetrol = 0.2,
+	GenericDiesel = 0.5,
+	Turbine = 0.125,
+	Wankel = 0.125,
+	Radial = 0.2,
+	Electric = 0.75
+}
 
 ACF.LiIonED = 0.458 -- li-ion energy density: kw hours / liter
 ACF.CuIToLiter = 0.0163871 -- cubic inches to liters
@@ -70,15 +90,6 @@ ACF.DebrisScale = 20 -- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale = 4		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
-
---how fast damage drops torque, lower loses more % torque
-ACF.TorqueScale = 0.25
-ACF.DieselTorqueScale = 0.35
-ACF.ElectricTorqueScale = 0.5
-
-ACF.EngineHPMult = 0.125
-ACF.DieselEngineHPMult = 0.5
-ACF.ElectricEngineHPMult = 0.75
 
 ACF.EnableDefaultDP = false -- Enable the inbuilt damage protection system.
 
@@ -142,6 +153,7 @@ elseif CLIENT then
 	killicon.Add( "acf_ammo", "HUD/killicons/acf_ammo", Color( 200, 200, 48, 255 ) )
 	
 	CreateConVar("acf_cl_particlemul", 1)
+	CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
 	
 	-- Cache results so we don't need to do expensive filesystem checks every time
 	local IsValidCache = {}
@@ -248,6 +260,8 @@ function ACF_CalcMassRatio( obj )
 	if not IsValid(obj) then return end
 	local Mass = 0
 	local PhysMass = 0
+	local power = 0
+	local fuel = 0
 	
 	-- find the physical parent highest up the chain
 	local Parent = obj
@@ -273,6 +287,13 @@ function ACF_CalcMassRatio( obj )
 		
 		if not IsValid( v ) then continue end
 		
+		if v:GetClass() == "acf_engine" then
+			power = power + (v.peakkw * 1.34)
+			fuel = v.RequiresFuel and 2 or fuel
+		elseif v:GetClass() == "acf_fueltank" then
+			fuel = math.max(fuel,1)
+		end
+		
 		local phys = v:GetPhysicsObject()
 		if not IsValid( phys ) then continue end
 		
@@ -290,6 +311,7 @@ function ACF_CalcMassRatio( obj )
 		v.acflastupdatemass = CurTime()
 	end
 	
+	if pwr then return { Power = power, Fuel = fuel } end
 end
 
 -- Cvars for recoil/he push

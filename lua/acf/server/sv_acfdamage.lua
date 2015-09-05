@@ -319,6 +319,8 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 end
 
 function ACF_KEShove(Target, Pos, Vec, KE )
+	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE )
+	if CanDo == false then return end
 	
 	local phys = Target:GetPhysicsObject()
 	local parent = Target:GetParent()
@@ -336,6 +338,7 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 		if(!Target.acflastupdatemass) or ((Target.acflastupdatemass + 10) < CurTime()) then
 			ACF_CalcMassRatio(Target)
 		end
+		if not Target.acfphystotal then return end --corner case error check
 		local physratio = Target.acfphystotal / Target.acftotal
 		phys:ApplyForceOffset( Vec:GetNormal() * KE * physratio, Pos )
 	end
