@@ -26,14 +26,26 @@ if CLIENT then
 	end
 	
 	function ACFGearboxGUICreate( Table )
+	
+		if not acfmenupanel.Serialize then
+			acfmenupanel.Serialize = function( tbl, factor )
+				local str = ""
+				for i=1,7 do 
+					str = str..math.Round(tbl[i] * factor,1)..","
+				end
+				RunConsoleCommand( "acfmenu_data9", str )
+			end
+		end
 		
 		if not acfmenupanel.GearboxData then
 			acfmenupanel.GearboxData = {}
 		end
+		
 		if not acfmenupanel.GearboxData[Table.id] then
 			acfmenupanel.GearboxData[Table.id] = {}
 			acfmenupanel.GearboxData[Table.id].GearTable = Table.geartable
 		end
+		
 		if Table.auto and not acfmenupanel.GearboxData[Table.id].ShiftTable then
 			acfmenupanel.GearboxData[Table.id].ShiftTable = {10,20,30,40,50,60,70}
 		end
@@ -54,15 +66,15 @@ if CLIENT then
 		if Table.auto and not acfmenupanel.CData.UnitsInput then
 			acfmenupanel.CData.UnitsInput = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
 				acfmenupanel.CData.UnitsInput.ID = Table.id
+				acfmenupanel.CData.UnitsInput.Gears = Table.gears
 				acfmenupanel.CData.UnitsInput:SetSize( 60,22 )
+				acfmenupanel.CData.UnitsInput:SetTooltip( "If using the shift point generator, recalc after changing units." )
 				acfmenupanel.CData.UnitsInput:AddChoice( "KPH", 10.936, true )
 				acfmenupanel.CData.UnitsInput:AddChoice( "MPH", 17.6 )
 				acfmenupanel.CData.UnitsInput:AddChoice( "GMU", 1 )
 				acfmenupanel.CData.UnitsInput:SetDark( true )
 				acfmenupanel.CData.UnitsInput.OnSelect = function( panel, index, label, data )
-					local serialize = ""
-					for i=1,7 do serialize = serialize..math.Round(acfmenupanel.GearboxData[panel.ID].ShiftTable[i]*data,1).."," end
-					RunConsoleCommand( "acfmenu_data9", serialize )
+					acfmenupanel.Serialize( acfmenupanel.GearboxData[panel.ID].ShiftTable, data )  --dot intentional
 				end
 			acfmenupanel.CustomDisplay:AddItem(acfmenupanel.CData.UnitsInput)
 		end
@@ -116,7 +128,9 @@ if CLIENT then
 						local mul = math.pi * acfmenupanel.CData.ShiftGenPanel.RPM:GetValue() * acfmenupanel.CData.ShiftGenPanel.Ratio:GetValue() * acfmenupanel.CData[10]:GetValue() * acfmenupanel.CData.ShiftGenPanel.Wheel:GetValue() / (60 * factor)
 						for i=1,acfmenupanel.CData.ShiftGenPanel.Gears do
 							acfmenupanel.CData[10+i].Input:SetValue( math.Round( math.abs( mul * acfmenupanel.CData[i]:GetValue() ), 2 ) )
+							acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable[i] = tonumber(acfmenupanel.CData[10+i].Input:GetValue())
 						end
+						acfmenupanel.Serialize( acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable, factor )  --dot intentional
 					end
 					
 					acfmenupanel.CData.WheelPanel = acfmenupanel.CData.ShiftGenPanel:Add( "DPanel" )
@@ -136,7 +150,7 @@ if CLIENT then
 							acfmenupanel.CData.ShiftGenPanel.Wheel:SetDrawBorder( false )
 							acfmenupanel.CData.ShiftGenPanel.Wheel:Dock( BOTTOM )
 							acfmenupanel.CData.ShiftGenPanel.Wheel:SetDecimals( 2 )
-							acfmenupanel.CData.ShiftGenPanel.Wheel:SetMin( 0 )
+							acfmenupanel.CData.ShiftGenPanel.Wheel:SetMinMax( 0, 9999 )
 							acfmenupanel.CData.ShiftGenPanel.Wheel:SetValue( 30 )
 					
 					acfmenupanel.CData.RatioPanel = acfmenupanel.CData.ShiftGenPanel:Add( "DPanel" )
@@ -156,7 +170,7 @@ if CLIENT then
 							acfmenupanel.CData.ShiftGenPanel.Ratio:SetDrawBorder( false )
 							acfmenupanel.CData.ShiftGenPanel.Ratio:Dock( BOTTOM )
 							acfmenupanel.CData.ShiftGenPanel.Ratio:SetDecimals( 2 )
-							acfmenupanel.CData.ShiftGenPanel.Ratio:SetMin( 0 )
+							acfmenupanel.CData.ShiftGenPanel.Ratio:SetMinMax( 0, 9999 )
 							acfmenupanel.CData.ShiftGenPanel.Ratio:SetValue( 0.1 )
 					
 					acfmenupanel.CData.RPMPanel = acfmenupanel.CData.ShiftGenPanel:Add( "DPanel" )
@@ -176,7 +190,7 @@ if CLIENT then
 							acfmenupanel.CData.ShiftGenPanel.RPM:SetDrawBorder( false )
 							acfmenupanel.CData.ShiftGenPanel.RPM:Dock( BOTTOM )
 							acfmenupanel.CData.ShiftGenPanel.RPM:SetDecimals( 2 )
-							acfmenupanel.CData.ShiftGenPanel.RPM:SetMin( 0 )
+							acfmenupanel.CData.ShiftGenPanel.RPM:SetMinMax( 0, 9999 )
 							acfmenupanel.CData.ShiftGenPanel.RPM:SetValue( 5000 )
 				
 				acfmenupanel.CustomDisplay:AddItem(acfmenupanel.CData.ShiftGenPanel)
@@ -224,16 +238,14 @@ if CLIENT then
 				acfmenupanel.CData[Index].Input:HideWang()
 				acfmenupanel.CData[Index].Input:SetDrawBorder( false )
 				acfmenupanel.CData[Index].Input:SetDecimals( 2 )
-				acfmenupanel.CData[Index].Input:SetMin( 0 )
+				acfmenupanel.CData[Index].Input:SetMinMax( 0, 9999 )
 				acfmenupanel.CData[Index].Input:SetValue( Value )
 				acfmenupanel.CData[Index].Input:Dock( RIGHT )
 				acfmenupanel.CData[Index].Input:SetWide( 45 )
 				acfmenupanel.CData[Index].Input.OnValueChanged = function( box, value )
 					acfmenupanel.GearboxData[box.ID].ShiftTable[box.Gear] = value
 					local str, factor = acfmenupanel.CData.UnitsInput:GetSelected()
-					local serialize = ""
-					for i=1,7 do serialize = serialize..math.Round(acfmenupanel.GearboxData[box.ID].ShiftTable[i]*factor,1).."," end
-					RunConsoleCommand( "acfmenu_data9", serialize )
+					acfmenupanel.Serialize( acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable, factor )  --dot intentional
 				end
 				RunConsoleCommand( "acfmenu_data9", "10,20,30,40,50,60,70" )
 
@@ -562,7 +574,7 @@ function ENT:UpdateOverlayText()
 		text = text .. "\nTarget: " .. math.Round( self.TargetMinRPM ) .. " - " .. math.Round( self.TargetMaxRPM ) .. " RPM\n"
 	elseif self.Auto then
 		for i = 1, self.Gears do
-			text = text .. "Gear " .. i .. ": " .. math.Round( self.GearTable[ i ], 2 ) .. ", Upshift @ ".. (self.ShiftPoints[i]/10.936) .. " kph / " .. (self.ShiftPoints[i]/17.6) .. " mph\n"
+			text = text .. "Gear " .. i .. ": " .. math.Round( self.GearTable[ i ], 2 ) .. ", Upshift @ ".. math.Round( self.ShiftPoints[i]/10.936, 1 ) .. " kph / " .. math.Round( self.ShiftPoints[i]/17.6 ,1 ) .. " mph\n"
 		end
 	else
 		for i = 1, self.Gears do
@@ -596,13 +608,13 @@ function ENT:TriggerInput( iname, value )
 		else
 			self:ChangeGear(value)
 		end
-	elseif ( iname == "Gear Up" ) then
+	elseif ( iname == "Gear Up" ) and not (value == 0) then
 		if self.Auto then
 			self:ChangeDrive(self.Drive + 1)
 		else
 			self:ChangeGear(self.Gear + 1)
 		end
-	elseif ( iname == "Gear Down" ) then
+	elseif ( iname == "Gear Down" ) and not (value == 0) then
 		if self.Auto then
 			self:ChangeDrive(self.Drive - 1)
 		else
@@ -929,19 +941,19 @@ function ENT:ChangeDrive(value)
 	
 	self.Drive = new
 	if self.Drive == 0 then
-		self.Gear = 0
+		self:ChangeGear(0)
 	elseif self.Drive == 2 then
 		self.Gear = self.Reverse
+		self.GearRatio = (self.GearTable[self.Gear] or 0)*self.GearTable.Final
+		self.ChangeFinished = CurTime() + self.SwitchTime
+		self.InGear = false
+		
+		Wire_TriggerOutput(self, "Current Gear", self.Gear)
+		self:EmitSound("buttons/lever7.wav",250,100)
+		Wire_TriggerOutput(self, "Ratio", self.GearRatio)
 	else
-		self.Gear = 1
+		self:ChangeGear(1)
 	end
-	self.GearRatio = (self.GearTable[self.Gear] or 0)*self.GearTable.Final
-	self.ChangeFinished = CurTime() + self.SwitchTime
-	self.InGear = false
-	
-	Wire_TriggerOutput(self, "Current Gear", self.Gear)
-	self:EmitSound("buttons/lever7.wav",250,100)
-	Wire_TriggerOutput(self, "Ratio", self.GearRatio)
 	
 end
 

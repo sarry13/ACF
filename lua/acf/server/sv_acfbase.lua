@@ -331,10 +331,10 @@ function ACF_GetAllPhysicalConstraints( ent, ResultTable )
 	for k, con in ipairs( ConTable ) do
 		
 		-- skip shit that is attached by a nocollide
-		if con.Type == "NoCollide" then continue end
-		
-		for EntNum, Ent in pairs( con.Entity ) do
-			ACF_GetAllPhysicalConstraints( Ent.Entity, ResultTable )
+		if not (con.Type == "NoCollide") then
+			for EntNum, Ent in pairs( con.Entity ) do
+				ACF_GetAllPhysicalConstraints( Ent.Entity, ResultTable )
+			end
 		end
 	
 	end
