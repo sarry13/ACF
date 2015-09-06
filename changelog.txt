@@ -85,3 +85,6 @@ r500
 -Fixed issues with auto gearbox UI
 -Fixed too many digits on auto gearbox overlay
 -Fixed issue with double shifting on gearup/geardown inputs
+
+*r560
+-github pls
