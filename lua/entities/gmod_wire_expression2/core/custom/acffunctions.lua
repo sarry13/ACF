@@ -43,6 +43,16 @@ local function restrictInfo(ply, ent)
 	return false
 end
 
+local function isLinkableACFEnt(ent)
+
+	if not validPhysics(ent) then return false end
+	
+	local entClass = ent:GetClass()
+	
+	return ACF_E2_LinkTables[entClass] ~= nil
+
+end
+
 
 -- [General Functions ] --
 
@@ -102,7 +112,7 @@ __e2setcost( 1 )
 
 
 
-local linkTables =
+ACF_E2_LinkTables = ACF_E2_LinkTables or 
 { -- link resources within each ent type.  should point to an ent: true if adding link.Ent, false to add link itself
 	acf_engine 		= {GearLink = true, FuelLink = false},
 	acf_gearbox		= {WheelLink = true, Master = false},
@@ -116,7 +126,7 @@ local function getLinks(ent, enttype)
 	
 	local ret = {}
 	-- find the link resources available for this ent type
-	for entry, mode in pairs(linkTables[enttype]) do
+	for entry, mode in pairs(ACF_E2_LinkTables[enttype]) do
 		if not ent[entry] then error("Couldn't find link resource " .. entry .. " for entity " .. tostring(ent)) return end
 		
 		-- find all the links inside the resources
@@ -157,7 +167,7 @@ e2function array entity:acfLinks()
 	
 	local enttype = this:GetClass()
 	
-	if not linkTables[enttype] then
+	if not ACF_E2_LinkTables[enttype] then
 		return searchForGearboxLinks(this)
 	end
 	
@@ -200,7 +210,7 @@ end
 
 --allows e2 to perform ACF links
 e2function number entity:acfLinkTo(entity target, number notify)
-	if not ((isGun(this) or isEngine(this) or isGearbox(this)) and (isOwner(self, this) and isOwner(self, target))) then
+	if not (isLinkableACFEnt(this)) and (isOwner(self, this) and isOwner(self, target)) then
 		if notify > 0 then
 			ACF_SendNotify(self.player, 0, "Must be called on a gun, engine, or gearbox you own.")
 		end
@@ -216,7 +226,7 @@ end
 
 --allows e2 to perform ACF unlinks
 e2function number entity:acfUnlinkFrom(entity target, number notify)
-	if not ((isGun(this) or isEngine(this) or isGearbox(this)) and (isOwner(self, this) and isOwner(self, target))) then
+	if not (isLinkableACFEnt(this)) and (isOwner(self, this) and isOwner(self, target)) then
 		if notify > 0 then
 			ACF_SendNotify(self.player, 0, "Must be called on a gun, engine, or gearbox you own.")
 		end
