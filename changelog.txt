@@ -76,3 +76,12 @@ r500
 -Nerfed 0.9L I2 and 1.0L I4 special weight by 15kg
 -Slight nerf to 5.2L V6
 -Slight buff to 7.8L V8
+
+*r558
+-Updated SF functions to new standard, courtesy of EpicG
+-Fixed armor tool reload not working at all
+-Hopefully fixed armor tool reload sometimes not getting entire contraption
+-Fixed transaxial GG turbines
+-Fixed issues with auto gearbox UI
+-Fixed too many digits on auto gearbox overlay
+-Fixed issue with double shifting on gearup/geardown inputs

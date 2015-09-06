@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 555 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 558 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1945
@@ -256,7 +256,7 @@ function ACF_Kinetic( Speed , Mass, LimitVel )
 end
 
 -- Global Ratio Setting Function
-function ACF_CalcMassRatio( obj )
+function ACF_CalcMassRatio( obj, pwr )
 	if not IsValid(obj) then return end
 	local Mass = 0
 	local PhysMass = 0
@@ -285,22 +285,26 @@ function ACF_CalcMassRatio( obj )
 	
 	for k, v in pairs( AllEnts ) do
 		
-		if not IsValid( v ) then continue end
+		if IsValid( v ) then
 		
-		if v:GetClass() == "acf_engine" then
-			power = power + (v.peakkw * 1.34)
-			fuel = v.RequiresFuel and 2 or fuel
-		elseif v:GetClass() == "acf_fueltank" then
-			fuel = math.max(fuel,1)
-		end
+			if v:GetClass() == "acf_engine" then
+				power = power + (v.peakkw * 1.34)
+				fuel = v.RequiresFuel and 2 or fuel
+			elseif v:GetClass() == "acf_fueltank" then
+				fuel = math.max(fuel,1)
+			end
+			
+			local phys = v:GetPhysicsObject()
+			if IsValid( phys ) then		
+			
+				Mass = Mass + phys:GetMass()
+				
+				if PhysEnts[ v ] then
+					PhysMass = PhysMass + phys:GetMass()
+				end
+				
+			end
 		
-		local phys = v:GetPhysicsObject()
-		if not IsValid( phys ) then continue end
-		
-		Mass = Mass + phys:GetMass()
-		
-		if PhysEnts[ v ] then
-			PhysMass = PhysMass + phys:GetMass()
 		end
 		
 	end

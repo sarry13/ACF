@@ -203,6 +203,7 @@ ACF_DefineEngine( "Turbine-Small-Ground-Trans", {
 	peakmaxrpm = 1000,
 	limitrpm = 4000,
 	iselec = true,
+	istrans = true,
 	flywheeloverride = 1667
 } )
 
@@ -222,6 +223,7 @@ ACF_DefineEngine( "Turbine-Medium-Ground-Trans", {
 	peakmaxrpm = 875,
 	limitrpm = 3500,
 	iselec = true,
+	istrans = true,
 	flywheeloverride = 1450,
 	pitch = 1.15
 } )
@@ -242,6 +244,7 @@ ACF_DefineEngine( "Turbine-Large-Ground-Trans", {
 	peakmaxrpm = 750,
 	limitrpm = 3000,
 	iselec = true,
+	istrans = true,
 	flywheeloverride = 1250,
 	pitch = 1.35
 } )
