@@ -353,6 +353,8 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 		Gearbox.Gear7 = Data7
 		Gearbox.Gear8 = Data8
 		Gearbox.Gear9 = Data9
+		
+	Gearbox.GearRatio = (Gearbox.GearTable[0] or 0)*Gearbox.GearTable.Final
 	
 	if Gearbox.Auto then
 		Gearbox.ShiftPoints = {}
@@ -538,6 +540,8 @@ function ENT:Update( ArgsTable )
 	self.Gear7 = ArgsTable[11]
 	self.Gear8 = ArgsTable[12]
 	self.Gear9 = ArgsTable[13]
+	
+	self.GearRatio = (self.GearTable[0] or 0)*self.GearTable.Final
 	
 	if self.Auto then
 		self.ShiftPoints = {}

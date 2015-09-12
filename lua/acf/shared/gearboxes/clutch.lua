@@ -25,7 +25,7 @@ ACF_DefineGearbox( "Clutch-S-T", {
 	category = "Clutch",
 	weight = CTW,
 	parentable = true,
-	switch = 0.3,
+	switch = 0.1,
 	maxtq = CTT,
 	gears = 0,
 	geartable = {
@@ -41,7 +41,7 @@ ACF_DefineGearbox( "Clutch-S-S", {
 	category = "Clutch",
 	weight = CSW,
 	parentable = true,
-	switch = 0.3,
+	switch = 0.15,
 	maxtq = CST,
 	gears = 0,
 	geartable = {
@@ -57,7 +57,7 @@ ACF_DefineGearbox( "Clutch-S-M", {
 	category = "Clutch",
 	weight = CMW,
 	parentable = true,
-	switch = 0.4,
+	switch = 0.2,
 	maxtq = CMT,
 	gears = 0,
 	geartable = {
@@ -73,7 +73,7 @@ ACF_DefineGearbox( "Clutch-S-L", {
 	category = "Clutch",
 	weight = CLW,
 	parentable = true,
-	switch = 0.6,
+	switch = 0.3,
 	maxtq = CLT,
 	gears = 0,
 	geartable = {

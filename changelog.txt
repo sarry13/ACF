@@ -91,3 +91,7 @@ r500
 
 *r561
 -Fixed change in r555 that broke missiles
+
+*r562
+-Fixed change in r555 that broke standalone clutch
+-Clamped added time from round extraction to half of load time, when unloading gun

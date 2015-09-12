@@ -756,7 +756,7 @@ function ENT:UnloadAmmo()
 	
 	self.Ready = false
 	Wire_TriggerOutput(self, "Ready", 0)
-	self:LoadAmmo( math.min(self.ReloadTime,math.max(self.ReloadTime - (self.NextFire - CurTime()),0) )	, true )
+	self:LoadAmmo( math.min(self.ReloadTime/2,math.max(self.ReloadTime - (self.NextFire - CurTime()),0) )	, true )
 	self:EmitSound("weapons/357/357_reload4.wav",500,100)
 
 end
