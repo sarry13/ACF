@@ -317,7 +317,7 @@ function ENT:UpdateOverlayText()
 	local RoundData = ACF.RoundTypes[ self.RoundType ]
 	
 	if RoundData and RoundData.cratetxt then
-		text = text .. "\n" .. RoundData.cratetxt( self.BulletData )
+		text = text .. "\n" .. RoundData.cratetxt( self.BulletData, self )
 	end
 	
 	self:SetOverlayText( text )
