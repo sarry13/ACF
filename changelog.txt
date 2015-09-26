@@ -95,3 +95,11 @@ r500
 *r562
 -Fixed change in r555 that broke standalone clutch
 -Clamped added time from round extraction to half of load time, when unloading gun
+
+*r563
+-Made it easier for plugins to modify crate text.
+
+*r564
+-Fixed sound tool shoot effect.
+-Added extension support to sound tool.
+-Added error notifications to sound tool.
