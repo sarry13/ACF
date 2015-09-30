@@ -15,7 +15,7 @@ Component.Description = "Adds functions for controlling ACF sents."
 
 Component.restrictInfo = function (ply, ent) -- Hack, this allows this function to be used from inline and prepared type functions.
 	if GetConVar("sbox_acf_restrictinfo"):GetInt() != 0 then
-		if isOwner(ply, ent) then return false else return true end
+		if EXPADV.IsOwner(ent, ply) then return false else return true end
 	end
 	return false
 end

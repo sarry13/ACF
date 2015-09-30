@@ -103,3 +103,6 @@ r500
 -Fixed sound tool shoot effect.
 -Added extension support to sound tool.
 -Added error notifications to sound tool.
+
+*r565
+-Fixed sbox_acf_restrictinfo support with EA2 component.
