@@ -238,7 +238,7 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 			Effect:SetAttachment( Index )		--Bulet Index
 			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
 			Effect:SetOrigin( Bullet.Pos )
-			Effect:SetMagnitude( Bullet["Crate"] ) --Encodes the crate the ammo originates from so clientside knows the crate from wich to pull ammo data
+			Effect:SetEntity( Entity(Bullet["Crate"]) )
 			Effect:SetScale( 0 )
 		util.Effect( "ACF_BulletEffect", Effect, true, true )
 

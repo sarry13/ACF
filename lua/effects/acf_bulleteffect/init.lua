@@ -43,7 +43,7 @@ function EFFECT:Init( data )
 	else
 		--print("Creating Bullet Effect")
 		local BulletData = {}
-		BulletData.Crate = Entity(math.Round(data:GetMagnitude()))
+		BulletData.Crate = data:GetEntity()
 		--TODO: Check if it is actually a crate
 		if not IsValid(BulletData.Crate) then
 			self:Remove() 
