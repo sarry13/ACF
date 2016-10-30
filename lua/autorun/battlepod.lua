@@ -1,5 +1,5 @@
 local function HandleACFPodAnimation( vehicle, player )
-	return player:SelectWeightedSequence( ACT_DRIVE_POD or 2072 ) 
+	return player:LookupSequence("drive_pd")
 end
 
 local Category = "Armoured Combat Framework"
