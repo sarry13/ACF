@@ -3,7 +3,7 @@ local function HandleACFSeatAnimation( vehicle, player )
 end
 
 local function HandleACFPodAnimation( vehicle, player )
-	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER ) 
+	return player:SelectWeightedSequence( ACT_DRIVE_POD or 2072 ) 
 end
 
 local Category = "Armoured Combat Framework"
