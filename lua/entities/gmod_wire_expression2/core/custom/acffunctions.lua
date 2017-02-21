@@ -240,6 +240,10 @@ e2function number entity:acfUnlinkFrom(entity target, number notify)
     return success and 1 or 0
 end
 
+--returns current acf dragdivisor
+e2function number acfDragDiv()
+	return ACF.DragDiv
+end
 
 -- [ Engine Functions ] --
 
@@ -941,3 +945,5 @@ e2function number entity:acfPeakFuelUse()
 	end
 	return math.Round(Consumption, 3)
 end
+
+

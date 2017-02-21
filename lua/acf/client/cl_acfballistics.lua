@@ -11,8 +11,7 @@ hook.Add("Think", "ACF_ManageBulletEffects", ACF_ManageBulletEffects)
 
 function ACF_SimBulletFlight( Bullet, Index )
 
-	local Time = CurTime()
-	local DeltaTime = Time - Bullet.LastThink
+	local DeltaTime = ACF.CurTime - Bullet.LastThink
 	
 	local Drag = Bullet.SimFlight:GetNormalized() * (Bullet.DragCoef * Bullet.SimFlight:Length()^2)/ACF.DragDiv
 	--print(Drag)
@@ -23,6 +22,6 @@ function ACF_SimBulletFlight( Bullet, Index )
 	if Bullet and Bullet.Effect:IsValid() then
 		Bullet.Effect:ApplyMovement( Bullet )
 	end
-	Bullet.LastThink = Time
+	Bullet.LastThink = ACF.CurTime
 	
 end

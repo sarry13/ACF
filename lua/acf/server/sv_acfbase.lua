@@ -346,7 +346,7 @@ end
 -- for those extra sneaky bastards
 function ACF_GetAllChildren( ent, ResultTable )
 	
-	if not ent.GetChildren then return end
+	--if not ent.GetChildren then return end  --shouldn't need to check anymore, built into glua now
 	
 	local ResultTable = ResultTable or {}
 	

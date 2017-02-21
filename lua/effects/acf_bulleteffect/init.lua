@@ -9,7 +9,7 @@ function EFFECT:Init( data )
 		self:Remove() 
 		return 
 	end
-	self.CreateTime = CurTime()
+	self.CreateTime = ACF.CurTime
 	
 	local Hit = data:GetScale()
 	local Bullet = ACF.BulletEffect[self.Index]
@@ -66,7 +66,7 @@ function EFFECT:Init( data )
 		
 		BulletData.Accel = BulletData.Crate:GetNWVector( "Accel", Vector(0,0,-600))
 		
-		BulletData.LastThink = CurTime()
+		BulletData.LastThink = ACF.CurTime
 		BulletData.Effect = self.Entity
 		
 		ACF.BulletEffect[self.Index] = BulletData		--Add all that data to the bullet table, overwriting if needed
@@ -98,7 +98,7 @@ end
 function EFFECT:Think()
 
 	local Bullet = ACF.BulletEffect[self.Index]
-	if Bullet and self.CreateTime > CurTime()-30 then
+	if Bullet and self.CreateTime > ACF.CurTime-30 then
 		return true
 	else
 		self:Remove()
@@ -110,29 +110,29 @@ end
 function EFFECT:ApplyMovement( Bullet )
 
 	local setPos = Bullet.SimPos
-	if((math.abs(setPos.x) > 16000) or (math.abs(setPos.y) > 16000) or (setPos.z < -16000)) then
+	if((math.abs(setPos.x) > 16380) or (math.abs(setPos.y) > 16380) or (setPos.z < -16380)) then
 		self:Remove()
 		return
 	end
-	if( setPos.z < 16000 ) then
-		self:SetPos( Bullet.SimPos )--Moving the effect to the calculated position
+	if( setPos.z < 16380 ) then
+		self:SetPos( setPos )--Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
 	end
 	
 	if Bullet.Tracer then
-		local DeltaTime = CurTime() - Bullet.LastThink
+		local DeltaTime = ACF.CurTime - Bullet.LastThink
 		local DeltaPos = Bullet.SimFlight*DeltaTime
 		local Length =  math.max(DeltaPos:Length()*2,1)
 		local MaxSprites = 2 --math.min(math.floor(math.max(Bullet.Caliber/5,1)*1.333)+1,5)
 		--for i=1, MaxSprites do
 			--local Light = Bullet.Tracer:Add( "sprites/light_glow02_add.vmt", Bullet.SimPos - (DeltaPos*i/MaxSprites) )
 			--local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", Bullet.SimPos - (DeltaPos*i/MaxSprites) )
-			local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", Bullet.SimPos - DeltaPos )
+			local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos - DeltaPos )
 			if (Light) then		
 				Light:SetAngles( Bullet.SimFlight:Angle() )
 				Light:SetVelocity( Bullet.SimFlight:GetNormalized() )
 				Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
-				Light:SetDieTime( math.Clamp(CurTime()-self.CreateTime,0.075,0.15) ) -- 0.075, 0.1
+				Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.075,0.15) ) -- 0.075, 0.1
 				Light:SetStartAlpha( 255 )
 				Light:SetEndAlpha( 155 )
 				Light:SetStartSize( 15*Bullet.Caliber ) -- 5
@@ -141,7 +141,7 @@ function EFFECT:ApplyMovement( Bullet )
 				Light:SetEndLength( 1 )
 			end
 		for i=1, MaxSprites do
-			local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000"..math.random(1,9), Bullet.SimPos - (DeltaPos*i/MaxSprites) )
+			local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000"..math.random(1,9), setPos - (DeltaPos*i/MaxSprites) )
 			if (Smoke) then		
 				Smoke:SetAngles( Bullet.SimFlight:Angle() )
 				Smoke:SetVelocity( Bullet.SimFlight*0.05 )
