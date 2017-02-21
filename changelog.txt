@@ -1,43 +1,6 @@
 r500
 --For an extended version history, please visit the github changelog.  https://github.com/nrlulz/ACF/commits/master
 
-*r545
--Fixed 2.4 B4 using wrong size model
--Slight buff to 2.1L B4, 2.4L B4, 3.6L V6
--Reduced turbine fuel use ~20%
--HE damage normalized a bit on large props
--Added distance feathering to HE damage
--Overall HE damage reduced
--Increased HEAT ammo/fuel damage multiplier 20%
-
-*r546
--Reduced prop health by 33%
--Reduced HE damage nerf
--HEAT pen buffed 20%
--Clamped HEAT penetrator travel distance
--GL now has 6 round clip with 2.5s reload
--60mm mortar rate of fire lowered
--Improved handling of shells re-entering through skybox
--Separated SL spawn limit from guns (max 10)
--Applied sitting infobubble hide to ammo/engine/gearbox/fuel
--Fixed cannon rifling texture and m36 muzzle brake
--Updated HMG model with 2 new bodies (mg-ff and mg151)
--Updated SA model (better scale & proportions, side mag bodygroup)
--Removed some unused models
-
-*r547
--Reduced prop health nerf from 33% to 15%
--Fixed HMG long barrel not firing from correct spot after paste
-
-*r548
--ACF rounds now respect visual clips on props
-
-*r552
--Fixed error with ACF menu tool, courtesy of brandonsturgeon
-
-*r553
--Fix for invalid setpos spam, TY Sestze
-
 *r555
 -Added ground gas turbines
 -Added automatic transmissions
@@ -109,3 +72,78 @@ r500
 
 *r569
 -Make acf_bulleteffect use SetEntity() instead of SetMagnitude()
+
+*r573
+-Minor optimization of fuel tanks, ammo crates, gearboxes, and engines
+-Minor optimization of ballistics courtesy of Red
+-Removed ACFs SetParent override, no longer needed
+-Fixed gearboxes not working after updating settings
+-Fixed auto-gearbox shift point generator UI
+-Increased random dispersion of ground ricochets
+-Fixed prop ricochet angles, added some random dispersion
+-Partial fix for hitting yourself when firing at high speed
+-Partial fix for bullets ghosting through props
+-Improved ballistics backtracing, increased backtrace length
+-Fix for the ocassional bullet exploding when reentering world courtesy of red
+-Added a few bugfixes courtesy of Steve
+--Fixed issue with world penetration not properly reducing KE
+--Fixed bullets getting culled early near source map limits
+--Fixed issue with parented guns failing to give bullets inherited velocity
+-Made muzzleflash smoke and missile smoke less blinding
+-Fuel tank capacity calculation improved, better representation of model
+--Capacity increased ~50%, but still 1/8th realistic for balance
+--Refuel rate doubled
+-Added e2 function acfDragDriv()
+-Reverted to old dragdiv 40, increasing ballistic drag
+--Minimal effect on cannons, reduces effective range of light weapons like MG
+-clamped short round firerate bonus to 19%
+-Smoke rounds updated
+--Added timed fuse to smoke ammo (min 0.5s), set to 0 to disable timed fuse
+--Allowed M and HW to fire smoke rounds
+--Smoke effect can handle up to 10,000g WP and 10,000g SM filler (up from 200g)
+--WP duration reduced 27% (from 29 seconds to 21 seconds for full length 40mm SL WP)
+--Added relevant info to ammocrate overlay
+-Increased max guns to 16 to help offset racks/flares using gun limit
+-Added rate of fire and magazine info to guns on acf menu tool
+-Reduced 40mm SL weight from 25 kg to 5 kg
+-Increased 40mm GL reload from 2.5s to 7.5s
+-Increased 37mm C round length from 45 cm to 48 cm
+-Adjusted MGs
+--7.62mm RoF increased from 477 to 600 r/m
+--7.62mm given 250 round magazine with 6 second reload
+--12.7mm RoF increased from 460 to 600 r/m
+--12.7mm given 150 round magazine with 6 second reload
+--14.5mm RoF increased from 346 to 480 r/m
+--14.5mm given 90 round magazine with 5 second reload
+--20mm given 50 round magazine with 4 second reload
+-Adjusted HMGs courtesy of Red
+--Spread increased from 0.32 to 0.4
+--20mm 160kg, RoF 675 r/m, 12 rounds, 8s reload, 40mm pen @ 850 m/s
+--30mm 480kg, RoF 434 r/m, 10 rounds, 10s reload, 56mm pen @ 850 m/s
+--40mm 740kg, RoF 380 r/m, 8 rounds, 13s reload, 69mm pen @ 850 m/s
+-Adjusted SAs
+--Increased SA spread from 0.08 to 0.12
+--Decreased 25mm RoF from 214 to 180 r/m
+--Increased 37mm weight from 480 kg to 540 kg
+--Decreased 37mm round length from 45 cm to 42 cm
+--Decreased 76mm round length from 75 cm to 70 cm
+--Decreased 76mm weight from 3200 kg to 2990 kg
+-Buffed ALs
+--75mm weight reduced from 2125 kg to 1892 kg
+--100mm RoF increased from 18.8 to 22 r/m
+--100mm weight reduced from 3750 kg to 3325 kg
+--120mm RoF increased from 13.6 to 18 r/m
+--120mm weight reduced from 6200 kg to 5850 kg
+--120mm magazine increased from 4 to 5
+--140mm RoF increased from 10.4 to 14 r/m
+--140mm weight reduced from 9180 kg to 8830 kg
+--140mm magazine increased from 4 to 5
+-New RAC models courtesy of Kickasskyle
+-Buffed RACs
+--Reduced spread from 0.48 to 0.44
+--20mm 974kg, 1200 r/m, 48 rounds, 10s reload
+--30mm 1863kg, 1400 r/m, 60 rounds, 8s reload
+-[KNOWN ISSUE] Bullets sometimes ghosting through fast oncoming props
+--I'm attempting to fix this, but is proving elusive. However, should be somewhat less common now.
+-[KNOWN ISSUE] WP filler does not work with missiles
+--Missiles will no longer be able to fire smoke in a future missiles update
