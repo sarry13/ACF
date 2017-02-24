@@ -147,3 +147,9 @@ r500
 --I'm attempting to fix this, but is proving elusive. However, should be somewhat less common now.
 -[KNOWN ISSUE] WP filler does not work with missiles
 --Missiles will no longer be able to fire smoke in a future missiles update
+
+*r574
+-Fixed fuel capacity being lower than original
+--Capacity multiplier is now half of realistic
+-Updated RAC textures
+-Updated ACF logo courtesy of SeikiMatt

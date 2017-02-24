@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 573 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 574 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1945
@@ -45,7 +45,7 @@ ACF.PDensity = 1.6	--Gun propellant density (Real powders go from 0.7 to 1.6, i'
 ACF.TorqueBoost = 1.25 --torque multiplier from using fuel
 ACF.FuelRate = 5  --multiplier for fuel usage, 1.0 is approx real world
 ACF.ElecRate = 1.5 --multiplier for electrics
-ACF.TankVolumeMul = 0.125 -- multiplier for fuel tank capacity, 1.0 is approx real world
+ACF.TankVolumeMul = 0.5 -- multiplier for fuel tank capacity, 1.0 is approx real world
 
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
