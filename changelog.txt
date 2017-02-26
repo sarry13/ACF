@@ -153,3 +153,7 @@ r500
 --Capacity multiplier is now half of realistic
 -Updated RAC textures
 -Updated ACF logo courtesy of SeikiMatt
+
+*r575
+-Fixed issue with tracers appearing to start behind weapon
+-Possible fix for FL HE-effect bug
