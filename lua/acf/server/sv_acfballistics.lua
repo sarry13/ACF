@@ -1,6 +1,9 @@
 ACF.Bullet = {}
 ACF.CurBulletIndex = 0
 ACF.BulletIndexLimt = 1000  --The maximum number of bullets in flight at any one time
+ACF.TraceFilter = { --entities that cause issue with acf and should be not be processed at all
+	prop_vehicle_crane = true
+	}
 
 function ACF_CreateBullet( BulletData )
 	
@@ -64,17 +67,16 @@ end
 function ACF_CheckClips(Index, Bullet, Ent, HitPos )
 	if not (Ent:GetClass() == "prop_physics") or (Ent.ClipData == nil) then return false end
 	
-	local HitClip = false
 	local normal
 	local origin
 	for i=1, #Ent.ClipData do
 		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward()
-		origin = Ent:LocalToWorld(Ent.ClipData[i]["n"]:Forward()*Ent.ClipData[i]["d"])
-		HitClip = HitClip or normal:Dot((origin - HitPos):GetNormalized()) > 0
-		if HitClip then return true end
+		origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
+		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
+		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end
 	end
 	
-	return HitClip
+	return false
 end
 
 function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
@@ -166,6 +168,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		if FlightRes.HitNonWorld and ACF_CheckClips(Index, Bullet, FlightRes.Entity, FlightRes.HitPos ) then
 			table.insert( Bullet.Filter , FlightRes.Entity )
 			RetryTrace = true
+			--can't retry on ACF.TraceFilter hit, for some reason source trace filter doesn't filter out certain ACF.TraceFilter entities (specifically crane)
 		end
 	end
 	
@@ -173,7 +176,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		if not FlightRes.StartSolid and not FlightRes.HitNoDraw then Bullet.SkipNextHit = nil end
 		Bullet.Pos = Bullet.NextPos
 		
-	elseif FlightRes.HitNonWorld then
+	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 		--print("Hit entity "..tostring(FlightRes.Entity).." on "..(SERVER and "server" or "client"))
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
 		local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
