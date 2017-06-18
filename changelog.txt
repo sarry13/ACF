@@ -164,3 +164,6 @@ r500
 -Added periodically forced mass updates to ammo and fuel
 -Added e2 function acfEffectiveArmor(Armor, Angle) which returns the effective armor of a given nominal armor and angle
 -Added e2 function ranger:acfEffectiveArmor() which returns the effective armor from a trace hitting an entity
+
+*r579
+-Forgot a thing last update (fixed e2 clip checks)
