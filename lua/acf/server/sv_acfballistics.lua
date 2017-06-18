@@ -64,7 +64,7 @@ function ACF_RemoveBullet( Index )
 	
 end
 
-function ACF_CheckClips(Index, Bullet, Ent, HitPos )
+function ACF_CheckClips( Ent, HitPos )
 	if not (Ent:GetClass() == "prop_physics") or (Ent.ClipData == nil) then return false end
 	
 	local normal
@@ -165,7 +165,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		if ( Bullet.Caliber <= 0.3 ) then FlightTr.mask = MASK_SHOT end
 		FlightRes = util.TraceLine(FlightTr)					--Trace to see if it will hit anything
 		
-		if FlightRes.HitNonWorld and ACF_CheckClips(Index, Bullet, FlightRes.Entity, FlightRes.HitPos ) then
+		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 			table.insert( Bullet.Filter , FlightRes.Entity )
 			RetryTrace = true
 			--can't retry on ACF.TraceFilter hit, for some reason source trace filter doesn't filter out certain ACF.TraceFilter entities (specifically crane)
