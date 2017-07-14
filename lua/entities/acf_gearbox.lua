@@ -423,7 +423,7 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 	Gearbox.OutL = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "driveshaftL" )).Pos)
 	Gearbox.OutR = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "driveshaftR" )).Pos)
 	
-	Owner:AddCount("_acf_gearbox", Gearbox)
+	Owner:AddCount("_acf_misc", Gearbox)
 	Owner:AddCleanup( "acfmenu", Gearbox )
 	
 	Gearbox:ChangeGear(1)

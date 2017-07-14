@@ -201,7 +201,7 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine:SetNWString( "WireName", Lookup.name )
 	Engine:UpdateOverlayText()
 	
-	Owner:AddCount("_acf_engine", Engine)
+	Owner:AddCount("_acf_misc", Engine)
 	Owner:AddCleanup( "acfmenu", Engine )
 	
 	ACF_Activate( Engine, 0 )

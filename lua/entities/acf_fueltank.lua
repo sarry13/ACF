@@ -265,7 +265,7 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 	Tank:UpdateFuelTank(Id, SId, Data2)
 	
 	if IsValid(Owner) then
-		Owner:AddCount( "_acf_fueltank", Tank )
+		Owner:AddCount( "_acf_misc", Tank )
 		Owner:AddCleanup( "acfmenu", Tank )
 	end
 	
