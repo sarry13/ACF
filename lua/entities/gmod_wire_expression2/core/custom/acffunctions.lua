@@ -258,19 +258,29 @@ end
 -- Returns the torque in N/m of an ACF engine
 e2function number entity:acfMaxTorque()
 	if not isEngine(this) then return 0 end
-	return this.PeakTorque or 0
+
+	local powerMul = 1
+
+	if table.Count(this.FuelLink) != 0 or this.RequiresFuel then powerMul = ACF.TorqueBoost end
+
+	return this.PeakTorque*powerMul or 0
 end
 
 -- Returns the power in kW of an ACF engine
 e2function number entity:acfMaxPower()
 	if not isEngine(this) then return 0 end
 	local peakpower
+
+	local powerMul = 1
+
+	if table.Count(this.FuelLink) != 0 or this.RequiresFuel then powerMul = ACF.TorqueBoost end
+
 	if this.iselec then
 		peakpower = math.floor(this.PeakTorque * this.LimitRPM / (4*9548.8))
 	else
 		peakpower = math.floor(this.PeakTorque * this.PeakMaxRPM / 9548.8)
 	end
-	return peakpower or 0
+	return peakpower*powerMul or 0
 end
 
 -- Returns the idle rpm of an ACF engine
