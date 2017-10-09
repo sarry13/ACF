@@ -167,3 +167,6 @@ r500
 
 *r579
 -Forgot a thing last update (fixed e2 clip checks)
+
+*r584
+-Included two community fixes, dealing with bullet-related errors and undo-queue trouble.  Thanks to vMajx and thegrb93 for their help.
