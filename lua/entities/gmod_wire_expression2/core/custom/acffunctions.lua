@@ -43,6 +43,22 @@ local function restrictInfo(ply, ent)
 	return false
 end
 
+local function getMaxTorque(ent)
+	if not isEngine(ent) then return 0 end
+	return ent.PeakTorque or 0
+end
+
+local function getMaxPower(ent)
+	if not isEngine(ent) then return 0 end
+	local peakpower
+	if ent.iselec then
+		peakpower = math.floor(ent.PeakTorque * ent.LimitRPM / (38195.2)) --(4*9548.8)
+	else
+		peakpower = math.floor(ent.PeakTorque * ent.PeakMaxRPM / 9548.8)
+	end
+	return peakpower or 0
+end
+
 local function isLinkableACFEnt(ent)
 
 	if not validPhysics(ent) then return false end
@@ -257,21 +273,27 @@ end
 
 -- Returns the torque in N/m of an ACF engine
 e2function number entity:acfMaxTorque()
-	if not isEngine(this) then return 0 end
-	return this.PeakTorque or 0
+	return getMaxTorque(this)
 end
 
 -- Returns the power in kW of an ACF engine
 e2function number entity:acfMaxPower()
-	if not isEngine(this) then return 0 end
-	local peakpower
-	if this.iselec then
-		peakpower = math.floor(this.PeakTorque * this.LimitRPM / (4*9548.8))
-	else
-		peakpower = math.floor(this.PeakTorque * this.PeakMaxRPM / 9548.8)
-	end
-	return peakpower or 0
+	return getMaxPower(this)
 end
+
+-- Same as the two above just with fuel duhhh//
+
+e2function number entity:acfMaxTorqueWithFuel()
+	return getMaxTorque(this)*ACF.TorqueBoost or 0
+end
+
+-- Detailed explanation of this function
+
+e2function number entity:acfMaxPowerWithFuel()
+	return getMaxPower(this)*ACF.TorqueBoost or 0
+end
+
+--//
 
 -- Returns the idle rpm of an ACF engine
 e2function number entity:acfIdleRPM()

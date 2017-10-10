@@ -19,6 +19,8 @@ E2Helper.Descriptions["acfDragDiv"] = "Returns current ACF drag divisor"
 --engine
 E2Helper.Descriptions["acfMaxTorque"] = "Returns the maximum torque (in N/m) of an ACF engine."
 E2Helper.Descriptions["acfMaxPower"] = "Returns the maximum power (in kW) of an ACF engine."
+E2Helper.Descriptions["acfMaxTorqueWithFuel"] = "Returns the maximum torque (in N/m) of an ACF engine with fuel linked."
+E2Helper.Descriptions["acfMaxPowerWithFuel"] = "Returns the maximum power (in kW) of an ACF engine with fuel linked."
 E2Helper.Descriptions["acfIdleRPM"] = "Returns the idle RPM of an ACF engine."
 E2Helper.Descriptions["acfPowerbandMin"] = "Returns the powerband minimum of an ACF engine."
 E2Helper.Descriptions["acfPowerbandMax"] = "Returns the powerband maximum of an ACF engine."
