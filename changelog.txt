@@ -170,3 +170,6 @@ r500
 
 *r584
 -Included two community fixes, dealing with bullet-related errors and undo-queue trouble.  Thanks to vMajx and thegrb93 for their help.
+
+*r588
+-Included new acfGetTorqueWithFuel and acfGetPowerWthFuel e2 functions, thanks to haaax2000 for the help.
