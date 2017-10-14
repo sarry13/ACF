@@ -955,7 +955,7 @@ e2function number entity:acfFuelUse()
 		Consumption = 60 * (this.Torque * this.FlyRPM / 9548.8) * this.FuelUse
 	else
 		local Load = 0.3 + this.Throttle * 0.7
-		Consumption = 60 * Load * this.FuelUse * (this.FlyRPM / this.PeakKwRPM) / ACF.FuelDensity[tank.FuelType]
+		Consumption = 60 * Load * this.FuelUse * (this.FlyRPM / this.PeakKwRPM) / ACF.FuelDensity[Tank.FuelType]
 	end
 	return math.Round(Consumption, 3)
 end
