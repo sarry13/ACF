@@ -176,3 +176,6 @@ r500
 
 *r592
 -Fixed entity:acfFuelUse() and increased ACF menu browser panel size.  Thanks again to haaax2000.
+
+*r597
+-Fixed battlepod + pilot seat animations.  Thanks to shadow7483147 for the help.
