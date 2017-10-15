@@ -233,7 +233,7 @@ function PANEL:PerformLayout()
 	
 	--Selection Tree panel
 	acfmenupanel.WeaponSelect:SetPos( 0, ypos )
-	acfmenupanel.WeaponSelect:SetSize( acfmenupanel:GetWide(), 165 )
+	acfmenupanel.WeaponSelect:SetSize( acfmenupanel:GetWide(), ScrH()*0.4 )
 	ypos = acfmenupanel.WeaponSelect.Y + acfmenupanel.WeaponSelect:GetTall() + vspacing
 	
 	if acfmenupanel.CustomDisplay then
