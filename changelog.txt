@@ -173,3 +173,6 @@ r500
 
 *r588
 -Included new acfGetTorqueWithFuel and acfGetPowerWthFuel e2 functions, thanks to haaax2000 for the help.
+
+*r592
+-Fixed entity:acfFuelUse() and increased ACF menu browser panel size.  Thanks again to haaax2000.
