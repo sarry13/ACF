@@ -1,78 +1,6 @@
 r500
 --For an extended version history, please visit the github changelog.  https://github.com/nrlulz/ACF/commits/master
 
-*r555
--Added ground gas turbines
--Added automatic transmissions
--Added 76mm SA
--Added client convar ACF_MobilityRopeLinks, setting 0 will skip rope creation on your links
--Added ACF E2/SF/EA2 function "entity:acfHitClip( vector hitpos )"; returns 1 if hitpos is on clipped part of entity
--Added ACF E2/SF/EA2 function "acfHoldGear" and "acfShiftPointScale" for automatic gearboxes
--Added a hook for ACF_KEShove
--Added legality checks for SOLID_NONE on ACF entities
--Added Sestze's MASK_SHOT passthrough (lets 30mm and under pass through things like chain-link fences)
--Added power to weight ratio output for armor properties tool reload function
--Added a few small optimizations and behind the scenes improvements
--Updated readme with install instructions, and a mention of Knight Icy's weapon sound pack
--Updated ACF Sound Tool to support a future update to ACF Missiles
--Updated engine stats for electrics and turbines to show the true powerband
--Fixed operation order error on visclip passthrough
--Fixed engines ocassionally refusing to use fuel
--Fixed lua error when trying to create ammo for nonexistent weapon types
--Fixed possible lua error on KE shove
--Reduced volume of ammo refill
--Reduced FL minimum spread from 1.0 to 0.25
--Damaged gearboxes lose efficiency
--More relaxed weldparenting rules on mobility (allows parenting chains, requires weld to last [physical] parent)
--Allowed diffs, double diffs, transfer cases, and clutches to be parented without welds
--Buffed smoke radius 25%
--Buffed smoke filler deploy rate, WP filler lifetime
--Buffed petrol health
--Buffed electric health massively
--Nerfed aero turbine throttle response
--Nerfed transaxial aero turbines to 80% of inline equivalent
--Nerfed large aero turbine power 8.5%, weight 10%
--Buffed small inline aero turbine power 15%
--Buffed med inline aero turbine power 10%
--Buffed small and med electric power 20%
--Buffed large electric power 40%
--Nerfed 0.9L I2 and 1.0L I4 special weight by 15kg
--Slight nerf to 5.2L V6
--Slight buff to 7.8L V8
-
-*r558
--Updated SF functions to new standard, courtesy of EpicG
--Fixed armor tool reload not working at all
--Hopefully fixed armor tool reload sometimes not getting entire contraption
--Fixed transaxial GG turbines
--Fixed issues with auto gearbox UI
--Fixed too many digits on auto gearbox overlay
--Fixed issue with double shifting on gearup/geardown inputs
-
-*r560
--github pls
-
-*r561
--Fixed change in r555 that broke missiles
-
-*r562
--Fixed change in r555 that broke standalone clutch
--Clamped added time from round extraction to half of load time, when unloading gun
-
-*r563
--Made it easier for plugins to modify crate text.
-
-*r564
--Fixed sound tool shoot effect.
--Added extension support to sound tool.
--Added error notifications to sound tool.
-
-*r565
--Fixed sbox_acf_restrictinfo support with EA2 component.
-
-*r569
--Make acf_bulleteffect use SetEntity() instead of SetMagnitude()
-
 *r573
 -Minor optimization of fuel tanks, ammo crates, gearboxes, and engines
 -Minor optimization of ballistics courtesy of Red
@@ -179,3 +107,22 @@ r500
 
 *r597
 -Fixed battlepod + pilot seat animations.  Thanks to shadow7483147 for the help.
+
+*r599
+-Changes in this update courtesy of Red
+-Reduced ricochet damage reduction from 25% to 20%
+-Reduced base chance of ricochet relative to speed
+-Added compensation for props moving forward into the path of bullets (with ferv's help)
+-Heat performance increased versus acf components, and spaced armor effect reduced from 33% to 25%
+-HMG fire rate and reload times adjusted, spread slightly reduced
+-RAC weight reduced very slightly
+-14.5mm RAC added
+--closer to 2-3 14.5s than a standard RAC
+--mostly for helis or light vehicles like buggies
+--inferior to multiple 14.5s, but better for aircraft
+-20mm & 30mm Heavy RAC added
+--massive magazines (3000 rounds)
+--slightly more powerful ammo than standard rac
+--slightly lower firerate than standard rac
+--almost identical to pre-update/GGG RAC
+-minor ballistics lua cleanup

@@ -145,6 +145,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 		end
 	end
 	--SITP Stuff
+	--TODO: comment out ISSITP when not necessary
 	local var = 1
 	if (ISSITP) then
 		if(!Entity.sitp_spacetype) then
