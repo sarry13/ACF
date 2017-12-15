@@ -236,11 +236,10 @@ function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor 
 			SpallEnergy.Momentum = SpallEnergy.Momentum*(1-HitRes.Loss)
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 		end
-		
 	end
-	
 end
 
+--Calculates the vector of the ricochet of a round upon impact at a set angle
 function ACF_RicochetVector(Flight, HitNormal)
 	--bit of maths shamelessly stolen from wiremod to rotate a vector around an axis
 	local Vec = Flight:GetNormalized()
@@ -255,15 +254,15 @@ function ACF_RicochetVector(Flight, HitNormal)
 	return Rotated
 end
 
-function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )	--Simulate a round impacting on a prop
+--Handles the impact of a round on a target
+function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )
 	--if (Bullet.Type == "HEAT") then print("Pen: "..((Energy.Penetration / Bullet["PenAera"]) * ACF.KEtoRHA)) end
 	local Angle = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
-		
 	local Ricochet = 0
-	local MinAngle = math.min(Bullet["Ricochet"] - Speed/39.37/15,89)	--Making the chance of a ricochet get higher as the speeds increase
+	local MinAngle = math.min(Bullet["Ricochet"] - Speed/39.37/18,89)	--Making the chance of a ricochet get higher as the speeds increase
 	if Angle > math.random(MinAngle,90) and Angle < 89.9 then	--Checking for ricochet
 		Ricochet = (Angle/100)			--If ricocheting, calculate how much of the energy is dumped into the plate and how much is carried by the ricochet
-		Energy.Penetration = Energy.Penetration - Energy.Penetration*Ricochet/4 --Ricocheting can save plates that would theorically get penetrated, can add up to 1/4 rating
+		Energy.Penetration = Energy.Penetration - Energy.Penetration*Ricochet/5 --Ricocheting can save plates that would theorically get penetrated, can add up to 1/5 rating
 	end
 	local HitRes = ACF_Damage ( Target , Energy , Bullet["PenAera"] , Angle , Bullet["Owner"] , Bone, Bullet["Gun"], Bullet["Type"] )  --DAMAGE !!
 	

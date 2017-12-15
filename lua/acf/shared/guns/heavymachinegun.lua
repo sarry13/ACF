@@ -2,9 +2,9 @@
 ACF_defineGunClass("HMG", {
 	spread = 0.4,
 	name = "Heavy Machinegun",
-	desc = "Designed as autocannons for aircraft, HMGs are rapid firing, lightweight, and compact but sacrifice accuracy, magazine size, and reload times.  They excel at strafing and other situations where there isn't a lot of time on target.",
+	desc = "Designed as autocannons for aircraft, HMGs are rapid firing, lightweight, and compact but sacrifice accuracy, magazine size, and reload times.  They excel at strafing and dogfighting.\nBecause of their long reload times and high rate of fire, it is best to aim BEFORE pushing the almighty fire switch.",
 	muzzleflash = "50cal_muzzleflash_noscale",
-	rofmod = 0.17, --was 0.29
+	rofmod = 0.17,
 	sound = "weapons/ACF_Gun/mg_fire3.wav",
 	soundDistance = " ",
 	soundNormal = " ",
@@ -16,7 +16,7 @@ ACF_defineGunClass("HMG", {
 } )
 
 --add a gun to the class
-ACF_defineGun("20mmHMG", { --id
+ACF_defineGun("20mmHMG", {
 	name = "20mm Heavy Machinegun",
 	desc = "The lightest of the HMGs, the 20mm has a rapid fire rate but suffers from poor payload size.  Often used to strafe ground troops or annoy low-flying aircraft.",
 	model = "models/machinegun/machinegun_20mm_compact.mdl",
@@ -24,8 +24,8 @@ ACF_defineGun("20mmHMG", { --id
 	caliber = 2.0,
 	weight = 160,
 	year = 1935,
-	rofmod = 1.5,
-	magsize = 12,
+	rofmod = 1.9, --at 1.5, 675rpm; at 2.0, 480rpm
+	magsize = 10,
 	magreload = 8,
 	round = {
 		maxlength = 30,
@@ -35,14 +35,14 @@ ACF_defineGun("20mmHMG", { --id
 
 ACF_defineGun("30mmHMG", {
 	name = "30mm Heavy Machinegun",
-	desc = "30mm shell chucker, light and compact. Your average heavy aircraft autocannon.",
+	desc = "30mm shell chucker, light and compact. Your average cold war dogfight go-to.",
 	model = "models/machinegun/machinegun_30mm_compact.mdl",
 	gunclass = "HMG",
 	caliber = 3.0,
 	weight = 480,
 	year = 1941,
-	rofmod = 1.2,
-	magsize = 10,
+	rofmod = 1.2, --at 1.05, 495rpm; 
+	magsize = 8,
 	magreload = 10,
 	round = {
 		maxlength = 37,
@@ -52,15 +52,15 @@ ACF_defineGun("30mmHMG", {
 
 ACF_defineGun("40mmHMG", {
 	name = "40mm Heavy Machinegun",
-	desc = "The heaviest of the heavy machineguns.  Massively powerful with a killer reload and heft ammunition requirements.",
+	desc = "The heaviest of the heavy machineguns.  Massively powerful with a killer reload and hefty ammunition requirements, it can pop even relatively heavy targets with ease.",
 	model = "models/machinegun/machinegun_40mm_compact.mdl",
 	gunclass = "HMG",
 	caliber = 4.0,
 	weight = 740,
 	year = 1955,
-	rofmod = 0.9,
-	magsize = 8,
-	magreload = 13,
+	rofmod = 1, --at 0.75, 455rpm
+	magsize = 6,
+	magreload = 12,
 	round = {
 		maxlength = 42,
 		propweight = 0.9
