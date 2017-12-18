@@ -461,13 +461,13 @@ function this.RegisterMode(mode, name, desc, default, think, defaultaction)
 			this.DefaultPermission = name
 		end
 	end
-		
+	
+	--Old method - can break on rare occasions!
 	--if LoadMapDPM() == name or default then 
 	--	print("ACF: Setting permission mode to: "..name)
 	--	this.DamagePermission = this.Modes[name]
 	--	this.DefaultPermission = name
 	--end
-	
 end
 
 
