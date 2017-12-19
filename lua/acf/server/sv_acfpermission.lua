@@ -15,8 +15,8 @@ this.ModeDescs = {}
 this.ModeThinks = {}
 
 //TODO: convar this
-local mapSZDir = "ACF/safezones/"
-local mapDPMDir = "ACF/permissions/"
+local mapSZDir = "acf/safezones/"
+local mapDPMDir = "acf/permissions/"
 file.CreateDir(mapDPMDir)
 
 
@@ -444,13 +444,30 @@ function this.RegisterMode(mode, name, desc, default, think, defaultaction)
 	this.DefaultCanDamage = defaultaction or false
 	print("ACF: Registered damage permission mode \"" .. name .. "\"!")
 	
+	local DPM = LoadMapDPM()
 	
-	if LoadMapDPM() == name or default then 
-		print("ACF: Setting permission mode to: "..name)
-		this.DamagePermission = this.Modes[name]
-		this.DefaultPermission = name
+	if DPM ~= nil then
+		if DPM == name then
+			print("ACF: Found default permission mode: " .. DPM)
+			print("ACF: Setting permission mode to: " .. name)
+			this.DamagePermission = this.Modes[name]
+			this.DefaultPermission = name
+		end
+	else
+		if default then
+			print("ACF: Map does not have default permission set, using default")
+			print("ACF: Setting permission mode to: " .. name)
+			this.DamagePermission = this.Modes[name]
+			this.DefaultPermission = name
+		end
 	end
 	
+	--Old method - can break on rare occasions!
+	--if LoadMapDPM() == name or default then 
+	--	print("ACF: Setting permission mode to: "..name)
+	--	this.DamagePermission = this.Modes[name]
+	--	this.DefaultPermission = name
+	--end
 end
 
 
