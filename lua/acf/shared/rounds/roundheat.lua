@@ -36,7 +36,7 @@ function Round.convert( Crate, PlayerData )
 	
 	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-	if not PlayerData.Data5 then PlayerData.Data5 = 0 end
+	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	if not PlayerData.Data6 then PlayerData.Data6 = 0 end
 	if not PlayerData.Data7 then PlayerData.Data7 = 0 end
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end

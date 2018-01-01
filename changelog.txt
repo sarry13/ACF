@@ -126,3 +126,6 @@ r500
 --slightly lower firerate than standard rac
 --almost identical to pre-update/GGG RAC
 -minor ballistics lua cleanup
+
+*r604
+-Fixing revision number
