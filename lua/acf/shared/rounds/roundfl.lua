@@ -71,10 +71,23 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData["Data10"] then PlayerData["Data10"] = 0 end --tracer
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
-	--pbn(Data)
+	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
+	if GunClass == "SA" then
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*3-4.5),1,32)
+	elseif GunClass == "MO" then
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-12,1,32)
+	elseif GunClass == "HW" then
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-10,1,32)
+	else
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-8,1,32)
+	end
+	Data["MinFlechettes"] = math.min(6,Data["MaxFlechettes"]) --force bigger guns to have higher min count
+	Data["Flechettes"] = math.Clamp(math.floor(PlayerData["Data5"]),Data["MinFlechettes"], Data["MaxFlechettes"])  --number of flechettes
 	
-	Data["Flechettes"] = math.floor(PlayerData["Data5"])  --number of flechettes
-	Data["FlechetteSpread"] = PlayerData["Data6"]
+	Data["MinSpread"] = 0.25
+	Data["MaxSpread"] = 30
+	Data["FlechetteSpread"] = math.Clamp(tonumber(PlayerData["Data6"]), Data["MinSpread"], Data["MaxSpread"])
+	
 	local PenAdj = 0.8 --higher means lower pen, but more structure (hp) damage (old: 2.35, 2.85)
 	local RadiusAdj = 1.0 -- lower means less structure (hp) damage, but higher pen (old: 1.0, 0.8)
 	local PackRatio = 0.0025*Data["Flechettes"]+0.69 --how efficiently flechettes are packed into shell
@@ -109,22 +122,8 @@ function Round.convert( Crate, PlayerData )
 
 end
 
-
 function Round.getDisplayData(Data, PlayerData)
 	local GUIData = {}
-	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
-	if GunClass == "SA" then
-		GUIData["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*3-4.5),1,32)
-	elseif GunClass == "MO" then
-		GUIData["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-12,1,32)
-	elseif GunClass == "HW" then
-		GUIData["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-10,1,32)
-	else
-		GUIData["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-8,1,32)
-	end
-	GUIData["MinFlechettes"] = math.min(6,GUIData["MaxFlechettes"]) --force bigger guns to have higher min count
-	GUIData["MinSpread"] = 0.25
-	GUIData["MaxSpread"] = 30
 	local Energy = ACF_Kinetic( Data["MuzzleVel"]*39.37 , Data["FlechetteMass"], Data["LimitVel"] )
 	GUIData["MaxPen"] = (Energy.Penetration/Data["FlechettePenArea"])*ACF.KEtoRHA
 	return GUIData

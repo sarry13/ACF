@@ -26,8 +26,8 @@ function Round.convert( Crate, PlayerData )
 	
 	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-	if not PlayerData.Data5 then PlayerData.Data5 = 0 end
-	if not PlayerData.Data6 then PlayerData.Data6 = 0 end
+	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
+	PlayerData.Data6 = math.max(PlayerData.Data6 or 0, 0)
 	PlayerData.Data7 = tonumber(PlayerData.Data7) or 0  --catching some possible errors with string data in legacy dupes
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
 	
