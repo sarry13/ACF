@@ -271,6 +271,11 @@ e2function number entity:acfIsEngine()
 	if isEngine(this) then return 1 else return 0 end
 end
 
+-- Returns 1 if an ACF engine is electric
+e2function number entity:acfIsElectric()
+	if ( this.iselec == true ) then return 1 else return 0 end
+end
+
 -- Returns the torque in N/m of an ACF engine
 e2function number entity:acfMaxTorque()
 	return getMaxTorque(this)
