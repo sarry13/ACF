@@ -876,7 +876,7 @@ end
 
 -- Returns 1 if the current engine requires fuel to run
 e2function number entity:acfFuelRequired()
-	if not isFuel(this) then return 0 end
+	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	return (this.RequiresFuel and 1) or 0
 end
