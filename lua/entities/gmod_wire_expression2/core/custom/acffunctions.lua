@@ -713,7 +713,7 @@ end
 e2function string entity:acfRoundType() --cartridge?
 	if not isAmmo(this) then return "" end
 	if restrictInfo(self, this) then return "" end
-	return this.RoundId or ""
+	return this.RoundType or ""
 end
 
 -- Returns the type of ammo in a crate or gun
