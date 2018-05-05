@@ -129,3 +129,15 @@ r500
 
 *r604
 -Fixing revision number
+
+*r613
+- Merged in community changes from n0th1ng1996, PolySteam, shadow7483147 and with help from thegrb93.  Thanks to all involved!
+- n0th1ng1996 (+ thegrb93):
+- Changed terminal ballistics for all rounds, introduced armour breaching (aka overmatching)
+- Added detonator bounce angles for explosive rounds except APHE.
+- Fixed HEAT bug, HEAT should now perform better.
+- Fixed entity:acfRoundType()
+- PolySteam:
+- Patched instant-reload bug.
+- shadow7483147:
+- Patched entity:acfFuelRequired()
