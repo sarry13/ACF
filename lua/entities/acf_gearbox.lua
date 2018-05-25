@@ -837,8 +837,8 @@ function ENT:CalcWheel( Link, SelfWorld )
 
 	local Wheel = Link.Ent
 	local WheelPhys = Wheel:GetPhysicsObject()
-	local VelDiff = ( Wheel:LocalToWorld( WheelPhys:GetAngleVelocity() ) - Wheel:GetPos() ) - SelfWorld
-	local BaseRPM = VelDiff:Dot( Wheel:LocalToWorld( Link.Axis ) - Wheel:GetPos() )
+	local VelDiff = WheelPhys:LocalToWorldVector( WheelPhys:GetAngleVelocity() ) - SelfWorld
+	local BaseRPM = VelDiff:Dot( WheelPhys:LocalToWorldVector( Link.Axis ) )
 	Link.Vel = BaseRPM
 	
 	if self.GearRatio == 0 then return 0 end
@@ -908,7 +908,7 @@ function ENT:ActWheel( Link, Torque, Brake, DeltaTime )
 	
 	local BrakeMult = 0
 	if Brake > 0 then
-		BrakeMult = Link.Vel * ( Link.Axis * Phys:GetInertia() ):Length() * Brake / 10
+		BrakeMult = Link.Vel * Link.Inertia * Brake / 10
 	end
 	
 	local Force = TorqueVec * math.Clamp( Torque * 0.75 + BrakeMult, -100000, 100000 )
@@ -992,11 +992,15 @@ function ENT:Link( Target )
 	if self.Owner:GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
 		Rope = constraint.CreateKeyframeRope( OutPosWorld, 1, "cable/cable2", nil, self, OutPos, 0, Target, InPos, 0 )
 	end
+	local Phys = Target:GetPhysicsObject()
+	local Axis = Phys:WorldToLocalVector( self:GetRight() )
+	local Inertia = ( Axis * Phys:GetInertia() ):Length()
 	
 	local Link = {
 		Ent = Target,
 		Side = Side,
-		Axis = Target:WorldToLocal( self:GetRight() + InPosWorld ),
+		Axis = Axis,
+		Inertia = Inertia,
 		Rope = Rope,
 		RopeLen = ( OutPosWorld - InPosWorld ):Length(),
 		Output = OutPos,
