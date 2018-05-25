@@ -761,7 +761,7 @@ function ENT:Calc( InputRPM, InputInertia )
 	self:CheckEnts()
 
 	local BoxPhys = self:GetPhysicsObject()
-	local SelfWorld = self:LocalToWorld( BoxPhys:GetAngleVelocity() ) - self:GetPos()
+	local SelfWorld = BoxPhys:LocalToWorldVector( BoxPhys:GetAngleVelocity() )
 	
 	if self.CVT and self.Gear == 1 then
 		if self.CVTRatio and self.CVTRatio > 0 then
