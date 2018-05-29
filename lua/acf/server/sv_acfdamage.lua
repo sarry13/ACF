@@ -248,6 +248,7 @@ end
 
 -- Handles the impact of a round on a target
 function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )
+	Bullet.Ricochets = Bullet.Ricochets or 0
 	local Angle = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
 
 	local HitRes = ACF_Damage ( --DAMAGE !!
@@ -290,7 +291,8 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	end	
 	
 	HitRes.Ricochet = false
-	if Ricochet > 0 then
+	if Ricochet > 0 and Bullet.Ricochets < 3 then
+		Bullet.Ricochets = Bullet.Ricochets + 1
 		Bullet["Pos"] = HitPos + HitNormal * 0.75
 		Bullet.FlightTime = 0
 		Bullet.Flight = (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.025):GetNormalized() * Speed * Ricochet
