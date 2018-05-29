@@ -141,3 +141,8 @@ r500
 - Patched instant-reload bug.
 - shadow7483147:
 - Patched entity:acfFuelRequired()
+
+*r618
+- Merged in community changes from thegrb93.  Thanks!
+- Fixed gearbox brake and added torque limit to prevent crashing/spontaneous deletion.
+- Optimized inertia calculation.
