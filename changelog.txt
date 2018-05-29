@@ -146,3 +146,7 @@ r500
 - Merged in community changes from thegrb93.  Thanks!
 - Fixed gearbox brake and added torque limit to prevent crashing/spontaneous deletion.
 - Optimized inertia calculation.
+
+*r621
+- Another change from thegrb93!
+- Fixed cases of infinite ricochet + suspected ammobox lag by limiting bullet ricochets to 3.
