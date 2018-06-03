@@ -150,3 +150,7 @@ r500
 *r621
 - Another change from thegrb93!
 - Fixed cases of infinite ricochet + suspected ammobox lag by limiting bullet ricochets to 3.
+
+*r625
+- Optimization by thegrb93:
+- Optimized gearbox torque application.
