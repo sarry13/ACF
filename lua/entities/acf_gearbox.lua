@@ -887,11 +887,10 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
 	else
 		BoxPhys = self:GetPhysicsObject()
 	end
-	
-	if IsValid( BoxPhys ) and ReactTq ~= 0 then	
-		local Force = self:GetForward() * math.Clamp( ReactTq * MassRatio - 1, -100000, 100000 )
-		BoxPhys:ApplyForceOffset( Force * 39.37 * DeltaTime, self:GetPos() + self:GetUp() * -39.37 )
-		BoxPhys:ApplyForceOffset( Force * -39.37 * DeltaTime, self:GetPos() + self:GetUp() * 39.37 )
+
+	if IsValid( BoxPhys ) and ReactTq ~= 0 then
+		local Torque = self:GetRight() * math.Clamp( 2 * math.deg( ReactTq * MassRatio ) * DeltaTime, -100000, 100000 )
+		BoxPhys:ApplyTorqueCenter( Torque )
 	end
 	
 	self.LastActive = CurTime()
@@ -903,18 +902,14 @@ function ENT:ActWheel( Link, Torque, Brake, DeltaTime )
 	local Phys = Link.Ent:GetPhysicsObject()
 	local Pos = Link.Ent:GetPos()
 	local TorqueAxis = Phys:LocalToWorldVector( Link.Axis )
-	local Cross = TorqueAxis:Cross( Vector( TorqueAxis.y, TorqueAxis.z, TorqueAxis.x ) )
-	local TorqueVec = TorqueAxis:Cross( Cross ):GetNormalized()
-	
+
 	local BrakeMult = 0
 	if Brake > 0 then
-		BrakeMult = Link.Vel * Link.Inertia * Brake / 10
+		BrakeMult = Link.Vel * Link.Inertia * Brake / 5
 	end
-	
-	local Force = TorqueVec * math.Clamp( Torque * 0.75 + BrakeMult, -100000, 100000 )
-	Phys:ApplyForceOffset( Force * -39.37 * DeltaTime, Pos + Cross * 39.37 )
-	Phys:ApplyForceOffset( Force * 39.37 * DeltaTime, Pos + Cross * -39.37 )
-	
+
+	local Torque = TorqueAxis * math.Clamp( math.deg( -Torque * 1.5 - BrakeMult ) * DeltaTime, -100000, 100000 )
+	Phys:ApplyTorqueCenter( Torque )
 end
 
 function ENT:ChangeGear(value)
