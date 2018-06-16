@@ -154,3 +154,8 @@ r500
 *r625
 - Optimization by thegrb93:
 - Optimized gearbox torque application.
+
+*r627
+- Update courtesy of Red and Stovokor
+- Minor engine balancing
+- New small i2 petrol, small v4 diesel, med v4 diesel, med r7 diesel, large i2 diesel, large v6 diesel
