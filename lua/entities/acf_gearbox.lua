@@ -889,7 +889,7 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
 	end
 
 	if IsValid( BoxPhys ) and ReactTq ~= 0 then
-		local Torque = self:GetRight() * math.Clamp( 2 * math.deg( ReactTq * MassRatio ) * DeltaTime, -100000, 100000 )
+		local Torque = self:GetRight() * math.Clamp( 2 * math.deg( ReactTq * MassRatio ) * DeltaTime, -500000, 500000 )
 		BoxPhys:ApplyTorqueCenter( Torque )
 	end
 	
@@ -900,7 +900,6 @@ end
 function ENT:ActWheel( Link, Torque, Brake, DeltaTime )
 	
 	local Phys = Link.Ent:GetPhysicsObject()
-	local Pos = Link.Ent:GetPos()
 	local TorqueAxis = Phys:LocalToWorldVector( Link.Axis )
 
 	local BrakeMult = 0
@@ -908,7 +907,7 @@ function ENT:ActWheel( Link, Torque, Brake, DeltaTime )
 		BrakeMult = Link.Vel * Link.Inertia * Brake / 5
 	end
 
-	local Torque = TorqueAxis * math.Clamp( math.deg( -Torque * 1.5 - BrakeMult ) * DeltaTime, -100000, 100000 )
+	local Torque = TorqueAxis * math.Clamp( math.deg( -Torque * 1.5 - BrakeMult ) * DeltaTime, -500000, 500000 )
 	Phys:ApplyTorqueCenter( Torque )
 end
 
