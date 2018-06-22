@@ -159,3 +159,7 @@ r500
 - Update courtesy of Red and Stovokor
 - Minor engine balancing
 - New small i2 petrol, small v4 diesel, med v4 diesel, med r7 diesel, large i2 diesel, large v6 diesel
+
+*r631
+- Update courtesy of thegrb93.
+- Increased anti-crash torque limit.
