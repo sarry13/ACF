@@ -163,3 +163,24 @@ r500
 *r631
 - Update courtesy of thegrb93.
 - Increased anti-crash torque limit.
+
+*r633
+- Added 40mm CL, 6 round parentable smoke/flare launcher
+- Slightly buffed 40mm SL
+- Reds balancing stuff
+-- HEAT damage buffed
+-- HEAT damage decreased to fuel tanks
+-- HMG mag sizes increased 50%
+-- HMG reload time reduced by a couple seconds
+-- HMG other minor buffs
+-- RAC minor buffing and adjustments
+-- HRAC 20/30 magazine is 80/60 rounds respectively
+-- HRAC 20/30 reload is 4/6 seconds respectively
+-- HRAC slight pen buff
+-- HRAC minor fire rate nerf
+-- HRAC 30 weight reduced 1000 kg
+-- (blame HRAC changes on people mounting twin hracs and spraying nonstop)
+-- MG spread increased from 0.16 to 0.24
+-- AC spread decreased from 0.16 to 0.12
+-- SC spread decreased from 0.24 to 0.2
+-- Med v4 horsepower increased from 148 to 209
