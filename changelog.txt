@@ -184,3 +184,8 @@ r500
 -- AC spread decreased from 0.16 to 0.12
 -- SC spread decreased from 0.24 to 0.2
 -- Med v4 horsepower increased from 148 to 209
+
+*r634
+- Fixed an exploit with HP rounds
+- Modified crate ammo capacity to be a bit more consistent with model, courtesy of RDC
+- Slightly bumped up crate capacity bonus

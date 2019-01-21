@@ -356,14 +356,13 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
 	
-	local Size = (self:OBBMaxs() - self:OBBMins())
-	local Efficiency = 0.11 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
-	local vol = math.floor(Size.x * Size.y * Size.z)
-	self.Volume = vol*Efficiency	
-	local CapMul = (vol > 46000) and ((math.log(vol*0.00066)/math.log(2)-4)*0.125+1) or 1
+	local Efficiency = 0.1576 * ACF.AmmoMod
+	local vol = math.floor(self:GetPhysicsObject():GetVolume())
+	self.Volume = vol*Efficiency
+	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
 	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
 	self.Caliber = GunData.caliber
-	self.RoFMul = (vol > 46000) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
+	self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
 	
 	self:SetNWString( "Ammo", self.Ammo )
 	self:SetNWString( "WireName", GunData.name .. " Ammo" )
