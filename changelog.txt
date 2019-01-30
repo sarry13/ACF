@@ -189,3 +189,6 @@ r500
 - Fixed an exploit with HP rounds
 - Modified crate ammo capacity to be a bit more consistent with model, courtesy of RDC
 - Slightly bumped up crate capacity bonus
+
+*r636
+- Fixed 140sc model size FINALLY, courtesy of Wizzard Lizzard and RDC
