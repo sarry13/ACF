@@ -192,3 +192,8 @@ r500
 
 *r636
 - Fixed 140sc model size FINALLY, courtesy of Wizzard Lizzard and RDC
+
+*r637
+- Rebalanced all Ground Turbine engines, torque nerfed drastically but HP remaining the same.
+- GGTs now act more like piston engines in that they do not have instant torque from idle and require to sit at a certain rpm to be efficient.
+-Added some Lockheed Bitchin' Betty F22 sounds from Serif
