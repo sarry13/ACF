@@ -211,3 +211,6 @@ r500
 -- Added acf_gun killicon
 - Fixed ACF_HE() argument naming
 - Fixed ACF_HE() usage in HE, APHE, HEAT ammunition
+
+*r645
+- new 140sc models were in the wrong folder
