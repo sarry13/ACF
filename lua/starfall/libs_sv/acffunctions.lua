@@ -991,6 +991,15 @@ SF.AddHook("postload", function()
 		return 0
 	end
 
+	-- Returns the drag coef of the ammo in a crate or gun
+	function ents_methods:acfDragCoef()
+		SF.CheckType( self, ents_metatable )
+		local this = unwrap( self )
+
+		if not isAmmo( this ) or isGun( this ) then return 0 end
+		if restrictInfo( SF.instance.player, this ) then return 0 end
+		return ( this.BulletData[ "DragCoef" ] or 0 ) / ACF.DragDiv
+	end
 
 	-- [ Armor Functions ] --
 
