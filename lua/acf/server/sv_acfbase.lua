@@ -82,21 +82,21 @@ end
 
 function ACF_Check ( Entity )
 	
-	if ( IsValid(Entity) ) then
-		if ( Entity:GetPhysicsObject():IsValid() and !Entity:IsWorld() and !Entity:IsWeapon() ) then
-			local Class = Entity:GetClass()
-			if ( Class != "gmod_ghost" and Class != "debris" and Class != "prop_ragdoll" and Class != "prop_vehicle_crane" and not string.find( Class , "func_" )  ) then
-				if !Entity.ACF then 
-					ACF_Activate( Entity )
-				elseif Entity.ACF.Mass != Entity:GetPhysicsObject():GetMass() then
-					ACF_Activate( Entity , true )
-				end
-				--print("ACF_Check "..Entity.ACF.Type)
-				return Entity.ACF.Type	
-			end	
-		end
+	if not IsValid(Entity) then return false end
+
+	local physobj = Entity:GetPhysicsObject()
+	if not ( physobj:IsValid() and (physobj:GetMass() or 0)>0 and !Entity:IsWorld() and !Entity:IsWeapon() ) then return false end
+
+	local Class = Entity:GetClass()
+	if ( Class == "gmod_ghost" or Class == "debris" or Class == "prop_ragdoll" or string.find( Class , "func_" )  ) then return false end
+
+	if !Entity.ACF then 
+		ACF_Activate( Entity )
+	elseif Entity.ACF.Mass != physobj:GetMass() then
+		ACF_Activate( Entity , true )
 	end
-	return false
+	--print("ACF_Check "..Entity.ACF.Type)
+	return Entity.ACF.Type	
 	
 end
 
@@ -104,7 +104,7 @@ function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, 
 	
 	local Activated = ACF_Check( Entity )
 	local CanDo = hook.Run("ACF_BulletDamage", Activated, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gun )
-	if CanDo == false then
+	if CanDo == false or Activated == false then -- above (default) hook does nothing with activated
 		return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }		
 	end
 	
@@ -372,8 +372,6 @@ end
 
 -- for those extra sneaky bastards
 function ACF_GetAllChildren( ent, ResultTable )
-	
-	--if not ent.GetChildren then return end  --shouldn't need to check anymore, built into glua now
 	
 	local ResultTable = ResultTable or {}
 	

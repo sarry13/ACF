@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 645 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 647 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1945
@@ -33,6 +33,9 @@ ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP 
 ACF.HEATMulFuel = 4 		--needs less multiplier, much less health than ammo
 ACF.HEATMulEngine = 10	--likewise
 ACF.HEATPenLayerMul = 0.75	--HEAT base energy multiplier
+ACF.HEATBoomConvert = 1/3 -- percentage of filler that creates HE damage at detonation
+ACF.HEATMinCrush = 800 -- vel where crush starts, progressively converting round to raw HE
+ACF.HEATMaxCrush = 1200 -- vel where fully crushed
 
 ACF.DragDiv = 40		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
@@ -50,7 +53,20 @@ ACF.FuelRate = 5  --multiplier for fuel usage, 1.0 is approx real world
 ACF.ElecRate = 1.5 --multiplier for electrics
 ACF.TankVolumeMul = 0.5 -- multiplier for fuel tank capacity, 1.0 is approx real world
 
-
+--[[
+	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
+	with a hard to predict check time and punishing lockout time
+	usage:
+	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
+	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
+]]
+ACF.LegalSettings = {
+	CanModelSwap = false,
+	Min = 5, 			-- min seconds between checks
+	Max = 25, 			-- max seconds between checks
+	Lockout = 35,		-- lockout time on not legal
+	NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(self.Min, self.Max) or self.Lockout) end
+}
 
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
@@ -72,7 +88,7 @@ ACF.TorqueScale = { --how fast damage drops torque, lower loses more % torque
 	GenericDiesel = 0.35,
 	Turbine = 0.2,
 	Wankel = 0.2,
-	Radial = 0.25,
+	Radial = 0.3,
 	Electric = 0.5
 }
 
@@ -81,7 +97,7 @@ ACF.EngineHPMult = { --health multiplier for engines
 	GenericDiesel = 0.5,
 	Turbine = 0.125,
 	Wankel = 0.125,
-	Radial = 0.2,
+	Radial = 0.3,
 	Electric = 0.75
 }
 
@@ -91,6 +107,7 @@ ACF.CuIToLiter = 0.0163871 -- cubic inches to liters
 ACF.RefillDistance = 300 --Distance in which ammo crate starts refilling.
 ACF.RefillSpeed = 700 -- (ACF.RefillSpeed / RoundMass) / Distance 
 
+ACF.ChildDebris = 75 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
 ACF.DebrisScale = 20 -- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale = 4		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
@@ -277,6 +294,33 @@ function ACF_GetPhysicalParent( obj )
 	return Parent
 end
 
+-- returns any wheels linked to this or child gearboxes
+function ACF_GetLinkedWheels( MobilityEnt )
+	if not IsValid( MobilityEnt ) then return {} end
+
+	local ToCheck = {}
+	local Wheels = {}
+
+	local links = MobilityEnt.GearLink or MobilityEnt.WheelLink -- handling for usage on engine or gearbox
+	for k,link in pairs( links ) do table.insert(ToCheck, link.Ent) end
+
+	-- use a stack to traverse the link tree looking for wheels at the end
+	while #ToCheck > 0 do
+		local Ent = table.remove(ToCheck,#ToCheck)
+		if IsValid(Ent) then
+			if Ent:GetClass() == "acf_gearbox" then
+				for k,v in pairs( Ent.WheelLink ) do
+					table.insert(ToCheck, v.Ent)
+				end
+			else
+				Wheels[Ent] = Ent -- indexing it same as ACF_GetAllPhysicalConstraints, for easy merge.  whoever indexed by entity in that function, uuuuuuggghhhhh
+			end
+		end
+	end
+
+	return Wheels
+end
+
 -- Global Ratio Setting Function
 function ACF_CalcMassRatio( obj, pwr )
 	if not IsValid(obj) then return end
@@ -325,6 +369,7 @@ function ACF_CalcMassRatio( obj, pwr )
 		
 	end
 	
+	-- todo: replace with a reference to table containing data
 	for k, v in pairs( AllEnts ) do
 		v.acfphystotal = PhysMass
 		v.acftotal = Mass
@@ -332,6 +377,97 @@ function ACF_CalcMassRatio( obj, pwr )
 	end
 	
 	if pwr then return { Power = power, Fuel = fuel } end
+end
+
+-- checks if an ent meets the given requirements for legality
+-- MinInertia needs to be mass normalized (normalized=inertia/mass)
+-- ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
+function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
+	-- check it exists
+	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
+
+	local problems = {}
+	local physobj = Ent:GetPhysicsObject()
+
+	--make sure traces can hit it (fade door, propnotsolid)
+	if not Ent:IsSolid() then
+		table.insert(problems,"Not solid")
+	end
+
+	-- check if the model matches
+	if Model != nil and not ACF.LegalSettings.CanModelSwap then
+		if Ent:GetModel() != Model then
+			table.insert(problems,"Wrong model")
+		end
+	end
+	
+	-- check mass
+	if MinMass != nil and (physobj:GetMass() < MinMass) then
+		table.insert(problems,"Under min mass")
+	end
+
+	-- check inertia components
+	if MinInertia != nil then
+		local inertia = physobj:GetInertia()/physobj:GetMass()
+		if (inertia.x < MinInertia.x) or (inertia.y < MinInertia.y) or (inertia.z < MinInertia.z) then
+			table.insert(problems,"Under min inertia")
+		end
+	end
+
+	-- check makesphere
+	if not CanMakesphere and (physobj:GetVolume() == nil) then
+		table.insert(problems,"Makesphere")
+	end
+
+	-- check for clips
+	if not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
+		table.insert(problems,"Visclip")
+	end
+	
+	-- if it has a parent, check if legally parented
+	if IsValid( Ent:GetParent() ) then
+		-- special check for ammo, prevent any parent that isn't root from clipping
+		--[[ disabling this for now
+		if Ent:GetClass() == "acf_ammo" then
+			local parent = Ent:GetParent()
+			while IsValid(parent:GetParent()) do
+				local ppos = parent:NearestPoint(Ent:pos()) -- nearest point on parent to crate
+				local cpos = Ent:NearestPoint( ppos ) -- nearest point on crate to nearest point on parent
+				if ppos:IsEqualTol(cpos,0.01) then -- if they're the same, then they're clipping
+					table.insert(problems,"Clipping with parent")
+					break
+				end
+				parent = parent:GetParent()
+			end
+		end
+		]]--
+
+		-- if no parenting allowed
+		if not (Parentable or ParentRequiresWeld) then
+			table.insert(problems,"Parented")
+		end
+
+		-- legal if weld not required, otherwise check if parented with weld
+		if ParentRequiresWeld then
+			local welded = false
+			local rootparent = ACF_GetPhysicalParent(Ent)
+
+			--make sure it's welded to root parent
+			for k, v in pairs( constraint.FindConstraints( Ent, "Weld" ) ) do
+				if v.Ent1 == rootparent or v.Ent2 == rootparent then
+					welded = true
+					break
+				end
+			end
+
+			if not welded then 
+				table.insert(problems,"Parented without weld to root parent")
+			end
+		end
+	end
+	
+	-- legal if number of problems is 0
+	return (#problems == 0), table.concat(problems, ", ")
 end
 
 -- Cvars for recoil/he push
@@ -344,6 +480,7 @@ CreateConVar("acf_armormod", 1)
 CreateConVar("acf_ammomod", 1)
 CreateConVar("acf_spalling", 0)
 CreateConVar("acf_gunfire", 1)
+CreateConVar("acf_modelswap_legal", 0)
 
 function ACF_CVarChangeCallback(CVar, Prev, New)
 	if( CVar == "acf_healthmod" ) then
@@ -369,6 +506,9 @@ function ACF_CVarChangeCallback(CVar, Prev, New)
 			text = "enabled" 
 		end
 		print ("ACF Gunfire has been " .. text)
+	elseif CVar == "acf_modelswap_legal" then
+		ACF.LegalSettings.CanModelSwap = tobool( New )
+		print("ACF model swapping is set to " .. (ACF.LegalSettings.CanModelSwap and "legal" or "not legal"))
 	end
 end
 
