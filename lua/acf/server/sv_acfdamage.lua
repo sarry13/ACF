@@ -492,7 +492,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
 		Debris:Spawn()
 		
-	if math.random() < 0.333 then
+	if math.random() < ACF.DebrisIgniteChance then
 		Debris:Ignite(math.Rand(5,45),0)
 	end
 	

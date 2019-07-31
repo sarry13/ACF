@@ -215,7 +215,9 @@ r500
 *r645
 - new 140sc models were in the wrong folder
 
-*r647
+*r648
+- Added jojobull's old wheel models
+- Added peniscolada's old steering wheel models
 - Optimized mem usage of tracing in ACF ballistics and HE damage
 - Replacing gun/engine sound with an empty path string will disable sound
 - ACF menu now shows spread for guns

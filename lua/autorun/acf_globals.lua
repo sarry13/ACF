@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 647 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 648 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1945
@@ -54,8 +54,7 @@ ACF.ElecRate = 1.5 --multiplier for electrics
 ACF.TankVolumeMul = 0.5 -- multiplier for fuel tank capacity, 1.0 is approx real world
 
 --[[
-	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
-	with a hard to predict check time and punishing lockout time
+	random, low cost legality check that discourages attempts to game checking with a hard to predict timing and punishing lockout time
 	usage:
 	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
 	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
@@ -107,7 +106,8 @@ ACF.CuIToLiter = 0.0163871 -- cubic inches to liters
 ACF.RefillDistance = 300 --Distance in which ammo crate starts refilling.
 ACF.RefillSpeed = 700 -- (ACF.RefillSpeed / RoundMass) / Distance 
 
-ACF.ChildDebris = 75 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
+ACF.ChildDebris = 50 -- higher is more debris props;  Chance =  ACF.ChildDebris / num_children;  Only applies to children of acf-killed parent props
+ACF.DebrisIgniteChance = 0.25
 ACF.DebrisScale = 20 -- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale = 4		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
@@ -388,6 +388,9 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 
 	local problems = {}
 	local physobj = Ent:GetPhysicsObject()
+	
+	-- check if physics is valid
+	if not IsValid(physobj) then return {Legal=false, Problems={"Invalid Physics"}} end
 
 	--make sure traces can hit it (fade door, propnotsolid)
 	if not Ent:IsSolid() then
@@ -426,21 +429,6 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 	
 	-- if it has a parent, check if legally parented
 	if IsValid( Ent:GetParent() ) then
-		-- special check for ammo, prevent any parent that isn't root from clipping
-		--[[ disabling this for now
-		if Ent:GetClass() == "acf_ammo" then
-			local parent = Ent:GetParent()
-			while IsValid(parent:GetParent()) do
-				local ppos = parent:NearestPoint(Ent:pos()) -- nearest point on parent to crate
-				local cpos = Ent:NearestPoint( ppos ) -- nearest point on crate to nearest point on parent
-				if ppos:IsEqualTol(cpos,0.01) then -- if they're the same, then they're clipping
-					table.insert(problems,"Clipping with parent")
-					break
-				end
-				parent = parent:GetParent()
-			end
-		end
-		]]--
 
 		-- if no parenting allowed
 		if not (Parentable or ParentRequiresWeld) then
