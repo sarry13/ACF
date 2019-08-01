@@ -52,7 +52,7 @@ end
 
 local function restrictInfo ( ent )
     if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
-        if not ent:GetOwner() == SF.instance.player then return true else return false end
+        if not ent:CPPIGetOwner() == SF.instance.player then return true else return false end
     end
     return false
 end
