@@ -50,9 +50,12 @@ local function reloadTime(ent)
 	return ent.MagReload
 end
 
+local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
+
 local function restrictInfo ( ent )
+	if not propProtectionInstalled then return false end
     if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
-        if not ent:CPPIGetOwner() == SF.instance.player then return true else return false end
+        if ent:CPPIGetOwner() ~= SF.instance.player then return true else return false end
     end
     return false
 end
@@ -87,7 +90,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( isAmmo( this ) or isFuel( this ) ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.Capacity or 1
 	end
 
@@ -97,7 +100,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )	
 
 		if not ( isEngine( this ) or isAmmo( this ) or isFuel( this ) ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		if not isAmmo( this ) then
 			if this.Active then return true end
 		else
@@ -112,7 +115,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )	
 
 		if not ( isEngine( this ) or isAmmo( this ) or isFuel( this ) ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Active", on and 1 or 0 )	
 	end
 
@@ -342,7 +345,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return math.floor( this.FlyRPM ) or 0
 	end
 
@@ -352,7 +355,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return math.floor( this.Torque or 0 )
 	end
 
@@ -362,7 +365,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return nil end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.Inertia or 0
 	end
 
@@ -372,7 +375,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return nil end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.Inertia / ( 3.1416 )^2 or 0
 	end
 
@@ -382,7 +385,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return math.floor( ( this.Torque or 0 ) * ( this.FlyRPM or 0 ) / 9548.8 )
 	end
 
@@ -392,7 +395,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		if ( this.FlyRPM < this.PeakMinRPM ) then return false end
 		if ( this.FlyRPM > this.PeakMaxRPM ) then return false end
 		return true
@@ -403,7 +406,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return ( this.Throttle or 0 ) * 100
 	end
 
@@ -414,7 +417,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Throttle", throttle )
 	end
 
@@ -435,7 +438,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.Gear or 0
 	end
 
@@ -445,7 +448,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.Gears or 0
 	end
 
@@ -455,7 +458,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.GearTable[ "Final" ] or 0
 	end
 
@@ -465,7 +468,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.GearRatio or 0
 	end
 
@@ -484,7 +487,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		if this.Dual then return true end
 		return false
 	end
@@ -504,7 +507,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		if this.InGear then return true end
 		return false
 	end
@@ -517,7 +520,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		local g = math.Clamp( math.floor( gear ), 1, this.Gears )
 		return this.GearTable[ g ] or 0
 	end
@@ -539,7 +542,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.CVT then return end
 		this.CVTRatio = math.Clamp( ratio, 0, 1 )
 	end
@@ -551,7 +554,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Gear", gear )
 	end
 
@@ -561,7 +564,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Gear Up", 1 ) --doesn't need to be toggled off
 	end
 
@@ -571,7 +574,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Gear Down", 1 ) --doesn't need to be toggled off
 	end
 
@@ -582,7 +585,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput("Brake", brake)
 	end
 
@@ -593,7 +596,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.Dual then return end
 		this:TriggerInput( "Left Brake", brake )
 	end
@@ -605,7 +608,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.Dual then return end
 		this:TriggerInput("Right Brake", brake )
 	end
@@ -617,7 +620,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Clutch", clutch )
 	end
 
@@ -628,7 +631,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.Dual then return end
 		this:TriggerInput( "Left Clutch", clutch )
 	end
@@ -640,7 +643,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.Dual then return end
 		this:TriggerInput( "Right Clutch", clutch )
 	end
@@ -652,7 +655,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.DoubleDiff then return end
 		this:TriggerInput( "Steer Rate", rate )
 	end
@@ -664,7 +667,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.Auto then return end
 		this:TriggerInput( "Hold Gear", hold )
 	end
@@ -676,7 +679,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGearbox( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		if not this.Auto then return end
 		this:TriggerInput( "Shift Speed Scale", scale )
 	end
@@ -689,7 +692,7 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if isGun( this ) and not restrictInfo( SF.instance.player, this ) then return true else return false end
+		if isGun( this ) and not restrictInfo( this ) then return true else return false end
 	end
 
 	-- Returns true if the ACF gun is ready to fire
@@ -698,7 +701,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		if ( this.Ready ) then return true end
 		return false
 	end
@@ -720,7 +723,7 @@ SF.AddHook("postload", function()
 		if not isGun( this ) or isAmmo( this ) then return 0 end
 		local Spread = this.GetInaccuracy and this:GetInaccuracy() or this.Inaccuracy or 0
 		if this.BulletData[ "Type" ] == "FL" then
-			if restrictInfo( SF.instance.player, this ) then return Spread end
+			if restrictInfo( this ) then return Spread end
 			return Spread + ( this.BulletData[ "FlechetteSpread" ] or 0 )
 		end
 		return Spread
@@ -732,7 +735,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		if (this.Reloading) then return true end
 		return false
 	end
@@ -752,7 +755,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if this.MagSize > 1 then
 			return ( this.MagSize - this.CurrentShot ) or 1
 		end
@@ -767,7 +770,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Fire", fire )
 	end
 
@@ -777,7 +780,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:UnloadAmmo()
 	end
 
@@ -787,7 +790,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this.Reloading = true
 	end
 
@@ -797,7 +800,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		local Ammo = 0
 		for Key, AmmoEnt in pairs( this.AmmoLink ) do
 			if AmmoEnt and AmmoEnt:IsValid() and AmmoEnt[ "Load" ] then
@@ -813,7 +816,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		local Ammo = 0
 		for Key, AmmoEnt in pairs( this.AmmoLink ) do
 			if AmmoEnt and AmmoEnt:IsValid() then
@@ -828,7 +831,7 @@ SF.AddHook("postload", function()
         SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-	    if restrictInfo( SF.instance.player, this ) or not isGun( this ) or this.Ready then return 0 end
+	    if restrictInfo( this ) or not isGun( this ) or this.Ready then return 0 end
 	    return reloadTime( this )
     end
 
@@ -837,7 +840,7 @@ SF.AddHook("postload", function()
         SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-        if restrictInfo( SF.instance.player, this ) or not isGun( this ) or this.Ready then return 1 end
+        if restrictInfo( this ) or not isGun( this ) or this.Ready then return 1 end
         return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime( this ), 0, 1 )
     end
 
@@ -857,7 +860,7 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if isAmmo( this ) and not restrictInfo( SF.instance.player, this ) then return true else return false end
+		if isAmmo( this ) and not restrictInfo( this ) then return true else return false end
 	end
 
 	-- Returns the rounds left in an acf ammo crate
@@ -866,7 +869,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isAmmo( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return this.Ammo or 0
 	end
 
@@ -876,7 +879,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isAmmo( this ) then return "" end
-		if restrictInfo( SF.instance.player, this ) then return "" end
+		if restrictInfo( this ) then return "" end
 		return this.RoundId or ""
 	end
 
@@ -886,7 +889,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isAmmo( this ) or isGun( this ) then return "" end
-		if restrictInfo( SF.instance.player, this ) then return "" end
+		if restrictInfo( this ) then return "" end
 		return this.BulletData[ "Type" ] or ""
 	end
 
@@ -895,8 +898,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return ( this.Caliber or 0 ) * 10
 	end
 
@@ -905,8 +908,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return math.Round( ( this.BulletData[ "MuzzleVel" ] or 0 ) * ACF.VelScale, 3 )
 	end
 
@@ -915,8 +918,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return math.Round( this.BulletData[ "ProjMass" ] or 0, 3 )
 	end
 
@@ -925,8 +928,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not this.BulletData[ "Type" ] == "FL" then return 0 end
 		return this.BulletData[ "Flechettes" ] or 0
 	end
@@ -936,8 +939,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not this.BulletData[ "Type" ] == "FL" then return 0 end
 		return math.Round( this.BulletData[ "FlechetteMass" ] or 0, 3)
 	end
@@ -947,8 +950,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not this.BulletData[ "Type" ] == "FL" then return 0 end
 		return math.Round( ( this.BulletData[ "FlechetteRadius" ] or 0 ) * 10, 3)
 	end
@@ -958,8 +961,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		local Type = this.BulletData[ "Type" ] or ""
 		local Energy
 		if Type == "AP" or Type == "APHE" then
@@ -980,8 +983,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		local Type = this.BulletData[ "Type" ] or ""
 		if Type == "HE" or Type == "APHE" then
 			return math.Round( this.BulletData[ "FillerMass" ]^0.33 * 8, 3 )
@@ -996,8 +999,8 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if not isAmmo( this ) or isGun( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		return ( this.BulletData[ "DragCoef" ] or 0 ) / ACF.DragDiv
 	end
 
@@ -1009,7 +1012,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not validPhysics( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not ACF_Check( this ) then return 0 end
 		return math.Round( this.ACF.Health or 0, 3 )
 	end
@@ -1020,7 +1023,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not validPhysics( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not ACF_Check( this ) then return 0 end
 		return math.Round( this.ACF.Armour or 0, 3 )
 	end
@@ -1031,7 +1034,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not validPhysics( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not ACF_Check( this ) then return 0 end
 		return math.Round( this.ACF.MaxHealth or 0, 3 )
 	end
@@ -1042,7 +1045,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not validPhysics( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not ACF_Check( this ) then return 0 end
 		return math.Round( this.ACF.MaxArmour or 0, 3 )
 	end
@@ -1053,7 +1056,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not validPhysics( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not ACF_Check( this ) then return 0 end
 		return ( this.ACF.Ductility or 0 ) * 100
 	end
@@ -1065,7 +1068,7 @@ SF.AddHook("postload", function()
 		SF.CheckType( self, ents_metatable )
 		local this = unwrap( self )
 
-		if isFuel( this ) and not restrictInfo( SF.instance.player, this ) then return true else return false end
+		if isFuel( this ) and not restrictInfo( this ) then return true else return false end
 	end
 
 	-- Returns true if the current engine requires fuel to run
@@ -1074,7 +1077,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return false end
-		if restrictInfo( SF.instance.player, this ) then return false end
+		if restrictInfo( this ) then return false end
 		return ( this.RequiresFuel and true ) or false
 	end
 
@@ -1085,7 +1088,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isFuel( this ) then return end
-		if restrictInfo( SF.instance.player, this ) then return end
+		if restrictInfo( this ) then return end
 		this:TriggerInput( "Refuel Duty", on )
 	end
 
@@ -1095,10 +1098,10 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if isFuel( this ) then
-			if restrictInfo( SF.instance.player, this ) then return 0 end
+			if restrictInfo( this ) then return 0 end
 			return math.Round( this.Fuel, 3 )
 		elseif isEngine( this ) then
-			if restrictInfo( SF.instance.player, this ) then return 0 end
+			if restrictInfo( this ) then return 0 end
 			if not #(this.FuelLink) then return 0 end --if no tanks, return 0
 
 			local liters = 0
@@ -1119,10 +1122,10 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if isFuel( this ) then
-			if restrictInfo( SF.instance.player, this ) then return 0 end
+			if restrictInfo( this ) then return 0 end
 			return math.Round( this.Fuel / this.Capacity, 3 )
 		elseif isEngine( this ) then
-			if restrictInfo( SF.instance.player, this ) then return 0 end
+			if restrictInfo( this ) then return 0 end
 			if not #( this.FuelLink ) then return 0 end --if no tanks, return 0
 
 			local liters = 0
@@ -1146,7 +1149,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not #( this.FuelLink ) then return 0 end --if no tanks, return 0
 
 		local tank
@@ -1174,7 +1177,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not isEngine( this ) then return 0 end
-		if restrictInfo( SF.instance.player, this ) then return 0 end
+		if restrictInfo( this ) then return 0 end
 		if not #( this.FuelLink ) then return 0 end --if no tanks, return 0
 
 		local fuel = "Petrol"
