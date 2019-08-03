@@ -261,3 +261,6 @@ r500
 - Buffed V6P large: 800 -> 675 kg, adjusted powerband to increase torque
 - Buffed V6D large: 1200 -> 900 kg, adjusted powerband to drastically increase torque
 - Buffed V8D large: 1500 -> 1200 kg
+
+*r657
+- starfall update courtesy of cheese
