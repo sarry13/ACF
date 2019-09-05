@@ -264,3 +264,6 @@ r500
 
 *r657
 - starfall update courtesy of cheese
+
+*r659
+- updated rocket effects courtesy of ghosteh
