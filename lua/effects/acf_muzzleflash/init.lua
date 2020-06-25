@@ -13,7 +13,7 @@
 	--local RoundType = ACF.IdRounds[data:GetSurfaceProp()]
 	local Propellant = data:GetScale()
 	local ReloadTime = data:GetMagnitude()
-	
+	if (!IsValid(list.Get("ACFClasses").GunClass[Class]) or list.Get("ACFClasses").GunClass[Class] == nil) then return end
 	local Class = Gun:GetNWString( "Class" )
 	local ClassData = list.Get("ACFClasses").GunClass[Class]
 	
