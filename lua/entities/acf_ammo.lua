@@ -308,7 +308,7 @@ function ENT:UpdateOverlayText()
 	
 	local roundType = self.RoundType
 	
-	if self.BulletData.Tracer and self.BulletData.Tracer > 0 then 
+	if IsValid(self.BulletData) and self.BulletData.Tracer and self.BulletData.Tracer > 0 then --rly?????
 		roundType = roundType .. "-T"
 	end
 	
