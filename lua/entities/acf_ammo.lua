@@ -414,6 +414,9 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 end
 
 function ENT:UpdateMass()
+	if self.Capacity == nil then self.Capacity = 1 end -- stop spamming plz
+	if self.LastMass == nil then self.LastMass = 1 end
+	
 	self.Mass = self.EmptyMass + self.AmmoMassMax*(self.Ammo/math.max(self.Capacity,1))
 	
 	--reduce superflous engine calls, update crate mass every 5 kgs change or every 10s-15s
