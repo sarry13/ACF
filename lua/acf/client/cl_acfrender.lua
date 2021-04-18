@@ -7,11 +7,11 @@ local Damaged = {
 hook.Add("PostDrawOpaqueRenderables", "ACF_RenderDamage", function()
 	if not ACF_HealthRenderList then return end
     cam.Start3D( EyePos(), EyeAngles() )
-		for k,ent in pairs( ACF_HealthRenderList ) do
+		for k,ent in next, ACF_HealthRenderList do
 			--if ent:EntIndex() == 227 then print(  ent.ACF_Material ) end
 			if IsValid(ent) then
 				render.ModelMaterialOverride( ent.ACF_Material )
-				render.SetBlend(math.Clamp(1- ent.ACF_HelathPercent,0,0.8))
+				render.SetBlend(math.Clamp(1 - (ent.ACF_HelathPercent or 0),0,0.8))
 				ent:DrawModel()
 			elseif ACF_HealthRenderList then
 				table.remove(ACF_HealthRenderList,k)
