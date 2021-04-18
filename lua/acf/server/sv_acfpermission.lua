@@ -134,8 +134,13 @@ end )
 
 
 local plyzones = {}
+local cocktime = CurTime()
 hook.Add("Think", "ACF_DetectSZTransition", function()
-	for k, ply in pairs(player.GetAll()) do
+	if cocktime > CurTime() then return end
+	cocktime = CurTime() + .5
+	local plgetall = player.GetAll()
+	for i = 1, #plgetall do
+		local ply = plgetall[i]
 		local sid = ply:SteamID()
 		local trans = false
 		local pos = ply:GetPos()
