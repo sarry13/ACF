@@ -414,8 +414,14 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 end
 
 function ENT:UpdateMass()
-	if self.Capacity == nil then print("WHY self.Capacity == nil?!??!?") self:Remove() end -- stop spamming plz
-	if self.LastMass == nil then print("WHY self.LastMass == nil?!??!?") self:Remove() end
+	if self.Capacity == nil then
+		print("какого хуя: " .. tostring(self))
+		self:Remove()
+	end
+	if self.LastMass == nil then
+		print("какого хуя: " .. tostring(self))
+		self:Remove()
+	end
 	self.Mass = self.EmptyMass + self.AmmoMassMax*(self.Ammo/math.max(self.Capacity,1))
 	--reduce superflous engine calls, update crate mass every 5 kgs change or every 10s-15s
 	if math.abs(self.LastMass - self.Mass) > 5 or CurTime() > self.NextMassUpdate then
