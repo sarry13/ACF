@@ -117,14 +117,14 @@ function SWEP:PrimaryAttack()
 			effect:SetNormal( userid:GetAimVector() )
 			effect:SetEntity( self.Weapon )
 			util.Effect( "thruster_ring", effect, true, true ) --("The 2 booleans control clientside override, by default it doesn't display it since it'll lag a bit behind inputs in MP, same for sounds" Kaf)
-			ent:EmitSound( "items/medshot4.wav", true, true )--and play a sound.
+			ent:EmitSound( "items/medshot4.wav", 75, 100 )--and play a sound.
 		else
 			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 			local Valid = ACF_Check ( ent )
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
 				ent.ACF.Health = math.min(ent.ACF.Health + (30/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
 				ent.ACF.Armour = ent.ACF.MaxArmour * (0.5 + ent.ACF.Health/ent.ACF.MaxHealth/2)
-				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", true, true )--Welding noise here, gotte figure out how to do a looped sound.
+				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100 )--Welding noise here, gotte figure out how to do a looped sound.
 				TeslaSpark(tr.HitPos , 1 )
 			end
 			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
@@ -183,7 +183,7 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				effectdata:SetStart( userid:GetShootPos() )
 				effectdata:SetOrigin( tr.HitPos )
 				util.Effect( "Sparks", effectdata , true , true )
-				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", true , true ) --old annoyinly loud sounds
+				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", 75, 100 ) --old annoyinly loud sounds
 			end
 		else 
 			self.Weapon:SetNWFloat( "HP", 0 )
