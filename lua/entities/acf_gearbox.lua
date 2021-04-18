@@ -580,7 +580,7 @@ end
 function ENT:UpdateOverlayText()
 	
 	local text = ""
-	
+	if not isnumber(self.Gears) then return end
 	if self.CVT then
 		text = "Reverse Gear: " .. math.Round( self.GearTable[ 2 ], 2 ) -- maybe a better name than "gear 2"...?
 		text = text .. "\nTarget: " .. math.Round( self.TargetMinRPM ) .. " - " .. math.Round( self.TargetMaxRPM ) .. " RPM\n"
