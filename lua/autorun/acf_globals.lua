@@ -113,9 +113,9 @@ ACF.SpreadScale = 4		-- The maximum amount that damage can decrease a gun's accu
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
-ACF.EnableDefaultDP = false -- Enable the inbuilt damage protection system.
+ACF.EnableDefaultDP = true -- Enable the inbuilt damage protection system.
 
-ACF.EnableKillicons = true -- Enable killicons overwriting.
+ACF.EnableKillicons = false -- Enable killicons overwriting.
 
 if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 	include("acf/shared/acf_userconfig.lua")
@@ -521,26 +521,12 @@ else
 	net.Receive( "ACF_Notify", ACF_Notify )
 end
 
-function ACF_UpdateChecking( )
-	http.Fetch("https://github.com/nrlulz/ACF",function(contents,size)
-		local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
-		if rev and ACF.Version >= rev then
-			print("[ACF] ACF Is Up To Date, Latest Version: "..rev)
-		elseif !rev then
-			print("[ACF] No Internet Connection Detected! ACF Update Check Failed")
-		else
-			print("[ACF] A newer version of ACF is available! Version: "..rev..", You have Version: "..ACF.Version)
-			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACF is available!" ) end
-		end
-		ACF.CurrentVersion = rev
-		
-	end, function() end)
-end
-ACF_UpdateChecking( )
 
 local function OnInitialSpawn( ply )
 	local Table = {}
-	for k,v in pairs( ents.GetAll() ) do
+	local a = ents.GetAll()
+	for i = 1, #a do
+		local v = a[i]
 		if v.ACF and v.ACF.PrHealth then
 			table.insert(Table,{ID = v:EntIndex(), Health = v.ACF.Health, v.ACF.MaxHealth})
 		end
